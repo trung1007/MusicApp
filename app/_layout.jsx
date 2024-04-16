@@ -7,8 +7,10 @@ import { SongProvider } from "../context/SongContext";
 import themeContext from "../theme/themeContext";
 import theme from "../theme/theme";
 import { EventRegister } from "react-native-event-listeners";
+import TrackPlayer from "react-native-track-player";
 
 const RootLayout = () => {
+  TrackPlayer.registerPlaybackService(() => require("../service.js"));
   const STYLES = ["dark-content", "light-content"];
 
   const [hidden, setHidden] = useState(false);
