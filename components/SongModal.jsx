@@ -20,6 +20,7 @@ import {
 
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
+import MusicPlayer from "./TrackPlayer";
 
 
 const SongModal = ({ item, toggleModal }) => {
@@ -49,13 +50,15 @@ const SongModal = ({ item, toggleModal }) => {
         <TouchableOpacity onPress={closeModal} style={{ paddingLeft: 10 }}>
           <AntDesign name="down" size={24} style={{ color: theme.color }} />
         </TouchableOpacity>
-        <View style={styles.content}>
+        {/* <View style={styles.content}>
           <Image source={{ uri: item.image }} style={styles.songImage} />
           <Text style={[styles.songName, { color: theme.color }]}>
             {item.name}
           </Text>
           <Text style={[styles.songSinger]}>{item.singer}</Text>
-        </View>
+        </View> */}
+        
+        <MusicPlayer />
       </SafeAreaView>
     </Modal>
   );

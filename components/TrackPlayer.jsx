@@ -18,14 +18,14 @@ import TrackPlayer, {
 } from 'react-native-track-player';
 import Slider from '@react-native-community/slider';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import podcasts from './assets/data';
+import podcasts from '../assets/data';
 
 function MusicPlayer() {
     const track = {
         title: 'Reality',
         artist: 'Lost Frequency',
         artwork: 'https://firebasestorage.googleapis.com/v0/b/music-app-2c0fc.appspot.com/o/ChungTaLaGiCuaNhau.jpg?alt=media&token=ce3fb3bd-cc19-48e9-bbb2-b50add50a9c9',
-        url: require('./reality.mp3'),
+        url: require('../reality.mp3'),
       }
   
   const podcastsCount = podcasts.length;
