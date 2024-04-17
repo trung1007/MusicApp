@@ -24,7 +24,8 @@ const TabLayout = () => {
           header: () => {
             return <View style={{ height: 50, backgroundColor:theme.backgroundColor }}></View>;
           },
-          tabBarInactiveTintColor: theme.iconColor,
+          tabBarInactiveTintColor: theme.iconInActiveColor,
+          tabBarActiveTintColor:theme.iconActiveColor,
           tabBarStyle: {
             backgroundColor: theme.tabBarColor,
             position: "absolute",
@@ -38,6 +39,15 @@ const TabLayout = () => {
             title: "Khám phá",
             tabBarIcon: ({ color }) => (
               <Entypo name="home" size={24} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="search"
+          options={{
+            title: "Tìm kiếm",
+            tabBarIcon: ({ color }) => (
+              <FontAwesome name="search" size={24} color={color} />
             ),
           }}
         />
