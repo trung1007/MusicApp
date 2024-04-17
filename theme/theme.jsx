@@ -4,7 +4,8 @@ const theme = {
       color: "black",
       backgroundColor: "white",
       tabBarColor:'white',
-      iconColor:"gray"
+      iconActiveColor:"#AA3775",
+      iconInActiveColor:'gray'
       
     },
     dark: {
@@ -12,7 +13,11 @@ const theme = {
       color: "white",
       backgroundColor: "#120D15",
       tabBarColor:'black',
-      iconColor:"gray"
+      iconColor:"gray",
+      iconActiveColor:"#8C37AA",
+      iconInActiveColor:'gray'
+
+
     },
   };
   export default theme;
