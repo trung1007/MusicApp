@@ -14,13 +14,9 @@ const StackLayout = () => {
   useEffect(() => {
     if(theme.theme==='light'){
         setStatusBar('dark-content')
-        console.log('test1');
-        console.log(theme.theme);
     }
     if(theme.theme==='dark'){
       setStatusBar('light-content')
-      console.log('test2');
-      console.log(theme.theme);
     }
   },[ theme]);
 
