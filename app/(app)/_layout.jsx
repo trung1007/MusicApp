@@ -1,32 +1,27 @@
 import { useState, useEffect, useContext } from "react";
 import { EventRegister } from "react-native-event-listeners";
 
-import { View, Text, SafeAreaView, StatusBar} from "react-native";
+import { View, Text, SafeAreaView } from "react-native";
 import { Stack, Slot } from "expo-router";
 import themeContext from "../../theme/themeContext";
-// import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from "expo-status-bar";
 
 const StackLayout = () => {
-  
   const theme = useContext(themeContext);
 
   const [statusBar, setStatusBar] = useState("");
   useEffect(() => {
-    if(theme.theme==='light'){
-        setStatusBar('dark-content')
+    if (theme.theme === "light") {
+      setStatusBar("dark");
     }
-    if(theme.theme==='dark'){
-      setStatusBar('light-content')
+    if (theme.theme === "dark") {
+      setStatusBar("light");
     }
-  },[ theme]);
-
-  
+  }, [theme]);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar
-        barStyle={statusBar}
-      />
+      <StatusBar style={statusBar} />
       <Stack>
         <Stack.Screen
           name="index"
