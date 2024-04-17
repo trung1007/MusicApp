@@ -15,12 +15,10 @@ import { Link } from "expo-router";
 
 import SlideAblum1 from "../../../../components/SlideAlbum1";
 import album1 from "../../../../components/album1";
+import themeContext from "../../../../theme/themeContext";
 
 const Home = () => {
-  const theme = {
-    backgroundColor: "white",
-    color: "black",
-  };
+  const theme = useContext(themeContext)
 
   return (
     <SafeAreaView

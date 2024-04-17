@@ -20,12 +20,10 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import SongModal from "./SongModal";
 import { SongProvider } from "../context/SongContext";
+import themeContext from "../theme/themeContext";
 
 const SongPlayer = () => {
-  const theme = {
-    backgroundColor:'white',
-    color:'black'
-  };
+  const theme = useContext(themeContext)
   const [modalVisible, setModalVisible] = useState(false);
 
   const song = SongProvider.song;

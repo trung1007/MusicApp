@@ -58,7 +58,7 @@ const SongModal = ({ item, toggleModal }) => {
           <Text style={[styles.songSinger]}>{item.singer}</Text>
         </View> */}
         
-        <MusicPlayer />
+        {/* <MusicPlayer /> */}
       </SafeAreaView>
     </Modal>
   );

@@ -50,11 +50,11 @@ function MusicPlayer() {
         ],
         //
       });
-      console.log(podcasts)
+      // console.log(podcasts)
      
       await TrackPlayer.add(podcasts);
       await gettrackdata();
-      console.log(TrackPlayer);
+      // console.log(TrackPlayer);
       await TrackPlayer.play();
     } catch (error) { console.log(error); }
   };

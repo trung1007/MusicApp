@@ -19,11 +19,9 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import SongModal from "./SongModal";
 import { SongProvider } from "../context/SongContext";
+import themeContext from "../theme/themeContext";
 const AlbumSong = ({ item }) => {
-  const theme = {
-    backgroundColor: "white",
-    color: "black",
-  };
+  const theme = useContext(themeContext)
 
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);

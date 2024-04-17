@@ -51,7 +51,7 @@ const Login = () => {
         }
       });
       AuthProvider.user = user;
-      console.log("succes");
+      
     } catch (error) {
       console.log(error);
       setShowSuccess(2);

@@ -1,59 +1,36 @@
 import { useState, useEffect, useContext } from "react";
 import { EventRegister } from "react-native-event-listeners";
 
-import { View, Text, SafeAreaView, StatusBar } from "react-native";
+import { View, Text, SafeAreaView, StatusBar} from "react-native";
 import { Stack, Slot } from "expo-router";
 import themeContext from "../../theme/themeContext";
-
-
-const STYLES = ["dark-content", "light-content"];
-const TRANSITIONS = ["fade", "slide", "none"];
+// import { StatusBar } from 'expo-status-bar';
 
 const StackLayout = () => {
+  
+  const theme = useContext(themeContext);
 
-  const [hidden, setHidden] = useState(false);
-  const [statusBarStyle, setStatusBarStyle] = useState(STYLES[0]);
+  const [statusBar, setStatusBar] = useState("");
+  useEffect(() => {
+    if(theme.theme==='light'){
+        setStatusBar('dark-content')
+        console.log('test1');
+        console.log(theme.theme);
+    }
+    if(theme.theme==='dark'){
+      setStatusBar('light-content')
+      console.log('test2');
+      console.log(theme.theme);
+    }
+  },[ theme]);
+
   
 
-  const changeStatusBarVisibility = () => setHidden(!hidden);
-
-  const changeStatusBarStyle = () => {
-    const styleId = STYLES.indexOf(statusBarStyle) + 1;
-    if (styleId === STYLES.length) {
-      setStatusBarStyle(STYLES[0]);
-    } else {
-      setStatusBarStyle(STYLES[styleId]);
-    }
-  };
-
- 
-
-  const [darkMode, setDarkMode] = useState(false);
-
-  useEffect(() => {
-    const listener = EventRegister.addEventListener("ChangeTheme", (data) => {
-      setDarkMode(data);
-      changeStatusBarStyle();
-    });
-    return () => {
-      EventRegister.removeAllListeners(listener);
-    };
-  }, [darkMode]);
-
-
-  const theme = useContext(themeContext)
-
   return (
-    
-
-    <SafeAreaView style={{flex:1}}>
+    <SafeAreaView style={{ flex: 1 }}>
       <StatusBar
-            animated={true}
-            backgroundColor={theme.color}
-            barStyle={statusBarStyle}
-            hidden={hidden}
-            
-          />
+        barStyle={statusBar}
+      />
       <Stack>
         <Stack.Screen
           name="index"
@@ -81,13 +58,11 @@ const StackLayout = () => {
             title: "tabs",
             headerStyle: {
               height: 0,
-              padding:10
+              padding: 10,
             },
-            header:()=>{
-              <SafeAreaView style={{flex:1}}>
-
-              </SafeAreaView>
-            }
+            header: () => {
+              <SafeAreaView style={{ flex: 1 }}></SafeAreaView>;
+            },
           }}
         />
       </Stack>

@@ -16,16 +16,13 @@ import { AntDesign } from "@expo/vector-icons";
 import { FIREBASE_DB } from "../../../../config/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import AlbumSong from "../../../../components/AlbumSong";
-
+import themeContext from "../../../../theme/themeContext";
 
 
 const Album = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const theme = {
-    backgroundColor:'white',
-    color:'black'
-  }
+  const theme = useContext(themeContext)
   const AlbumName = route.params[0].name;
 
   const [songAlbum, setSongAlubm] = useState([]);
@@ -77,7 +74,7 @@ const Album = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <Text style={[styles.albumName, theme.color]}>
+        <Text style={[styles.albumName, {color:theme.color}]}>
           {route.params[0].name}
         </Text>
 
