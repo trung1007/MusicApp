@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { EventRegister } from "react-native-event-listeners";
 
-import { View, Text, SafeAreaView } from "react-native";
+import { View, Text, SafeAreaView, } from "react-native";
 import { Stack, Slot } from "expo-router";
 import themeContext from "../../theme/themeContext";
 import { StatusBar } from "expo-status-bar";

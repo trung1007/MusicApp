@@ -32,9 +32,6 @@ const Profile = () => {
       console.log(error);
     }
   };
-  useEffect(()=>{
-    console.log(user);
-  })
 
   return (
     <View style={[styles.wrapper, { backgroundColor: theme.backgroundColor }]}>
