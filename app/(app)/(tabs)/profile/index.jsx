@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-
 import themeContext from "../../../../theme/themeContext";
 import { FIREBASE_AUTH, FIREBASE_DB } from "../../../../config/firebase";
 
@@ -22,7 +21,7 @@ import { signOut } from "@firebase/auth";
 const Profile = () => {
   const navigation = useNavigation();
   const theme = useContext(themeContext);
-  const user = AuthProvider.user
+  const user = AuthProvider.user;
 
   const handleSignOut = async () => {
     try {
@@ -32,9 +31,6 @@ const Profile = () => {
       console.log(error);
     }
   };
-  useEffect(()=>{
-    console.log(user);
-  })
 
   return (
     <View style={[styles.wrapper, { backgroundColor: theme.backgroundColor }]}>
@@ -47,7 +43,7 @@ const Profile = () => {
         <Image
           style={styles.ava}
           source={{
-            uri: user.ava
+            uri: user.ava,
           }}
         />
         <View style={[styles.inf, { borderBottomColor: theme.color }]}>
@@ -58,13 +54,19 @@ const Profile = () => {
         </View>
       </View>
       <View style={styles.personal}>
-        <Button title="Account" />
-        <Button
-          title="Setting"
+        <TouchableOpacity>
+          <Text>Account</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
           onPress={() => {
             navigation.navigate("settings");
           }}
-        />
+        >
+          <Text>Setting</Text>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Text>About</Text>
+        </TouchableOpacity>
       </View>
       <TouchableOpacity
         style={{ alignItems: "center" }}
@@ -118,9 +120,11 @@ const styles = StyleSheet.create({
   personal: {
     display: "flex",
     alignItems: "flex-start",
-
+    marginTop: 10,
     borderBottomWidth: 2,
     paddingBottom: 15,
+    gap: 10,
+    
   },
   logOutBtn: {
     width: 200,

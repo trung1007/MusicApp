@@ -23,6 +23,8 @@ import {
 } from "../../../config/firebase";
 import { signInWithEmailAndPassword } from "@firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
+import { AntDesign } from "@expo/vector-icons";
+import { Fontisto } from "@expo/vector-icons";
 
 const Login = () => {
   const theme = {
@@ -51,7 +53,6 @@ const Login = () => {
         }
       });
       AuthProvider.user = user;
-      
     } catch (error) {
       console.log(error);
       setShowSuccess(2);
@@ -83,6 +84,8 @@ const Login = () => {
           </Text>
         </View>
         <View style={styles.formInput}>
+          <Fontisto name="email" size={24} color="#525252" />
+
           <TextInput
             style={styles.textInput}
             placeholder="Email"
@@ -92,6 +95,8 @@ const Login = () => {
           />
         </View>
         <View style={styles.formInput}>
+          <AntDesign name="lock" size={24} color="#525252" />
+
           <TextInput
             style={styles.textInput}
             placeholder="Password"
@@ -105,7 +110,9 @@ const Login = () => {
         <View>
           <TouchableOpacity onPress={handleLogin}>
             <View style={styles.LoginBtn}>
-              <Text style={{ color: "white" }}>Đăng nhập</Text>
+              <Text style={{ color: "white", fontSize: 18, letterSpacing: 2 }}>
+                Đăng nhập
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -123,7 +130,11 @@ const Login = () => {
         </View>
         <View style={styles.Register}>
           <Text style={{ color: theme.color }}>Bạn chưa có tài khoản?</Text>
-          <Link href={"../Login/register"}>Đăng kí</Link>
+          <View style={styles.goRes}>
+            <Link href={"../Login/register"} style={{ color: "white" }}>
+              Đăng kí
+            </Link>
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -178,6 +189,14 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    gap: 10,
+  },
+  goRes: {
+    backgroundColor: "purple",
+    padding: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 15,
   },
   successContainer: {
     height: Dimensions.get("window").height,
