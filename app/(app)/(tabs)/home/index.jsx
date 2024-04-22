@@ -14,34 +14,50 @@ import {
 import { Link } from "expo-router";
 
 import SlideAblum1 from "../../../../components/SlideAlbum1";
+import SlideAlbum2 from "../../../../components/SlideAlbum2";
 
 import themeContext from "../../../../theme/themeContext";
 import { FIREBASE_DB } from "../../../../config/firebase";
 import { collection, getDocs } from "firebase/firestore";
 
 const Home = () => {
-  const theme = useContext(themeContext)
-  const [album, setAlbum] = useState([])
+  const theme = useContext(themeContext);
+  const [albumList, setAlbum] = useState([]);
+  const [headerAlbum, setHeaderAlbum] = useState([]);
+  const [album1, setAlbum1] = useState([]);
+  const [album2, setAlbum2] = useState([]);
+  const [album3, setAlbum3] = useState([]);
 
-  const fetchAlbum = async () =>{
+  const fetchAlbum = async () => {
     const albumTmp = [];
 
-    const AlbumList = await getDocs(collection(FIREBASE_DB, 'AlbumList'))
-    AlbumList.forEach((doc)=>{
+    const AlbumList = await getDocs(collection(FIREBASE_DB, "AlbumList"));
+    AlbumList.forEach((doc) => {
       albumTmp.push({
         name: doc.data().name,
-        image: doc.data().image
-      })
-    })
-    setAlbum(albumTmp)
-  }
+        image: doc.data().image,
+        albumId: doc.data().album,
+      });
+    });
 
-  useEffect(()=>{
-    fetchAlbum()
-  },[])
+    setAlbum(albumTmp);
+    setHeaderAlbum(
+      albumTmp.filter((item) => item.albumId === "Nổi Bật Hôm Nay")
+    );
+    setAlbum1(
+      albumTmp.filter((item)=>item.albumId==="Có Thể Bạn Muốn Nghe")
+    )
+    setAlbum2(
+      albumTmp.filter((item)=>item.albumId==="Vừa Nghe Vừa Lak")
+    )
+    setAlbum3(
+      albumTmp.filter((item)=>item.albumId==="Chill")
+    )
+  };
 
-  const HeaderAlbum = album.slice(0,5)
-
+  useEffect(() => {
+    fetchAlbum();
+  }, []);
 
   return (
     <SafeAreaView
@@ -58,12 +74,12 @@ const Home = () => {
             Nổi bật hôm nay
           </Text>
           <FlatList
-          data={HeaderAlbum}
-          renderItem={({ item }) => <SlideAblum1 item={item} />}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          pagingEnabled={false}
-        />
+            data={headerAlbum}
+            renderItem={({ item }) => <SlideAblum1 item={item} />}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            pagingEnabled={false}
+          />
           <View></View>
         </View>
         <View style={styles.playlist}>
@@ -72,13 +88,13 @@ const Home = () => {
               Có thể bạn muốn nghe
             </Text>
           </TouchableOpacity>
-          {/* <FlatList
-          data={silderMusic2}
-          renderItem={({ item }) => <SlideImage2 item={item} />}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          pagingEnabled={false}
-        /> */}
+          <FlatList
+            data={album1}
+            renderItem={({ item }) => <SlideAlbum2 item={item} />}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            pagingEnabled={false}
+          />
         </View>
         <View style={styles.playlist}>
           <TouchableOpacity>
@@ -86,13 +102,13 @@ const Home = () => {
               Vừa Nghe Vừa Lak
             </Text>
           </TouchableOpacity>
-          {/* <FlatList
-          data={MusicList3}
-          renderItem={({ item }) => <SlideImage2 item={item} />}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          pagingEnabled={false}
-        /> */}
+          <FlatList
+            data={album2}
+            renderItem={({ item }) => <SlideAlbum2 item={item} />}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            pagingEnabled={false}
+          />
         </View>
         <View style={styles.playlist}>
           <TouchableOpacity>
@@ -100,56 +116,56 @@ const Home = () => {
               Chill
             </Text>
           </TouchableOpacity>
-          {/* <FlatList
-            data={MusicList4}
-            renderItem={({ item }) => <SlideImage2 item={item} />}
+          <FlatList
+            data={album3}
+            renderItem={({ item }) => <SlideAlbum2 item={item} />}
             horizontal
             showsHorizontalScrollIndicator={false}
             pagingEnabled={false}
-          /> */}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
-    wrapper: {
-      flex: 1,
-    },
-    title: {
-      paddingLeft: 10,
-      paddingTop: 10,
-      paddingBottom: 10,
-    },
-    titleText: {
-      fontSize: 24,
-      fontWeight: "600",
-      letterSpacing: 3,
-    },
-    content: {
-      // paddingLeft: 10,
-      // paddingRight: 10,
-      marginBottom: 40,
-    },
-    SOTDtext: {
-      fontSize: 18,
-      fontWeight: "600",
-      letterSpacing: 1,
-      paddingLeft: 10,
-      paddingRight: 10,
-      marginBottom: 10,
-    },
-    playlistText: {
-      fontSize: 18,
-      fontWeight: "600",
-      letterSpacing: 1,
-      paddingLeft: 10,
-      marginBottom: 10,
-    },
-    playlist: {
-      marginTop: 10,
-      marginBottom: 10,
-    },
-  });
+  wrapper: {
+    flex: 1,
+  },
+  title: {
+    paddingLeft: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  titleText: {
+    fontSize: 24,
+    fontWeight: "600",
+    letterSpacing: 3,
+  },
+  content: {
+    // paddingLeft: 10,
+    // paddingRight: 10,
+    marginBottom: 40,
+  },
+  SOTDtext: {
+    fontSize: 18,
+    fontWeight: "600",
+    letterSpacing: 1,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginBottom: 10,
+  },
+  playlistText: {
+    fontSize: 18,
+    fontWeight: "600",
+    letterSpacing: 1,
+    paddingLeft: 10,
+    marginBottom: 10,
+  },
+  playlist: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+});
 
 export default Home;
