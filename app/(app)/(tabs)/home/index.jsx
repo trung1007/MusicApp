@@ -14,11 +14,34 @@ import {
 import { Link } from "expo-router";
 
 import SlideAblum1 from "../../../../components/SlideAlbum1";
-import album1 from "../../../../components/album1";
+
 import themeContext from "../../../../theme/themeContext";
+import { FIREBASE_DB } from "../../../../config/firebase";
+import { collection, getDocs } from "firebase/firestore";
 
 const Home = () => {
   const theme = useContext(themeContext)
+  const [album, setAlbum] = useState([])
+
+  const fetchAlbum = async () =>{
+    const albumTmp = [];
+
+    const AlbumList = await getDocs(collection(FIREBASE_DB, 'AlbumList'))
+    AlbumList.forEach((doc)=>{
+      albumTmp.push({
+        name: doc.data().name,
+        image: doc.data().image
+      })
+    })
+    setAlbum(albumTmp)
+  }
+
+  useEffect(()=>{
+    fetchAlbum()
+  },[])
+
+  const HeaderAlbum = album.slice(0,5)
+
 
   return (
     <SafeAreaView
@@ -35,7 +58,7 @@ const Home = () => {
             Nổi bật hôm nay
           </Text>
           <FlatList
-          data={album1}
+          data={HeaderAlbum}
           renderItem={({ item }) => <SlideAblum1 item={item} />}
           horizontal
           showsHorizontalScrollIndicator={false}

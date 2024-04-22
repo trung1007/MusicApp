@@ -45,7 +45,7 @@ const Register = () => {
     }
   };
   const goLogin=()=>{
-    navigation.navigate('Login')
+    navigation.goBack()
   }
 
 
