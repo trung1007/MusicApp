@@ -81,7 +81,9 @@ const Album = () => {
         <ScrollView 
           showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.content}>
-          <Image source={route.params[0].image} style={styles.albumImg} />
+          <Image source={{
+            uri:route.params[0].image
+          }} style={styles.albumImg} />
 
           {songAlbum.map((item) => (
             <AlbumSong 

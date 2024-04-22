@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   Button,
@@ -25,7 +25,7 @@ const SlideAblum1 = ({ item }) => {
   return (
     <View style={[styles.wrapper]}>
       <Pressable onPress={goAlbum}>
-        <Image source={item.image} style={[styles.image]} />
+        <Image source={{ uri: item.image }} style={[styles.image]} />
       </Pressable>
     </View>
   );
