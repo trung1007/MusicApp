@@ -14,37 +14,35 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const SlideAlbum2 = ({ item }) => {
+const SearchSong = ({ item }) => {
   const { width } = useWindowDimensions();
   const navigation = useNavigation();
-  const goAlbum = () => {
-    navigation.navigate("album", [item]);
-  };
-
-  
-
   return (
-    <View style={[styles.wrapper]}>
-      <Pressable onPress={goAlbum}>
-        <Image source={{ uri: item.image }} style={[styles.image]} />
-      </Pressable>
-    </View>
+    <Pressable style={[styles.wrapper]}>
+      <Image source={{ uri: item.image }} style={[styles.image]} />
+      <View>
+      <Text>{item.name}</Text>
+      <Text>{item.singer}</Text>
+      </View>
+      
+    </Pressable>
   );
 };
 
-export default SlideAlbum2;
+export default SearchSong;
 
 const styles = StyleSheet.create({
   wrapper: {
-    justifyContent: "center",
+    display: "flex",
+    flexDirection: "row",
+    margin: 10,
     alignItems: "center",
-    marginLeft: 5,
-    marginRight: 5,
+    gap: 10,
   },
 
   image: {
-    width: 160,
-    height: 160,
+    width: 50,
+    height: 50,
     borderRadius: 10,
   },
 });

@@ -22,7 +22,7 @@ const StackLayout = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar style={statusBar} />
-      <Stack>
+      <Stack >
         <Stack.Screen
           name="index"
           options={{
