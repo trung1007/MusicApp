@@ -31,7 +31,6 @@ const Profile = () => {
       console.log(error);
     }
   };
-
   return (
     <View style={[styles.wrapper, { backgroundColor: theme.backgroundColor }]}>
       <View style={styles.header}>

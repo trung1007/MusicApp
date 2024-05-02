@@ -47,6 +47,7 @@ const Album = () => {
   useEffect(() => {
     fetchMusic();
     setSelect(false)
+    // console.log();
   }, []);
   const [currentSong, setCurrentSong] = useState({})
   const handleSelectSong = (song) => {

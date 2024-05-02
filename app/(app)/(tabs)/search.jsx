@@ -12,17 +12,64 @@ import {
   Dimensions,
   Keyboard,
   TouchableWithoutFeedback,
+  FlatList,
 } from "react-native";
 import themeContext from "../../../theme/themeContext";
 import { AntDesign } from "@expo/vector-icons";
+import { FIREBASE_DB } from "../../../config/firebase";
+import { collection, getDocs } from "firebase/firestore";
+import SearchSong from "../../../components/SearchSong";
+import filter from "lodash.filter";
 
 const Search = () => {
   const theme = useContext(themeContext);
   const textInputRef = useRef(null);
+  const [musicList, setMusicList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [fullData, setFullData] = useState([]);
 
   const handlePress = () => {
     textInputRef.current.focus();
   };
+
+  const fetchMusic = async () => {
+    const musicTmp = [];
+
+    const MusicList = await getDocs(collection(FIREBASE_DB, "Music"));
+    MusicList.forEach((doc) => {
+      musicTmp.push({
+        image: doc.data().img,
+        singer: doc.data().singer,
+        name: doc.data().title,
+        lyric: doc.data().uri,
+      });
+    });
+    setMusicList(musicTmp);
+    setFullData(musicTmp);
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    const formattedQuery = query.toLowerCase();
+    const filteredData = filter(fullData, (music) => {
+      return contains(music, formattedQuery);
+    });
+    setMusicList(filteredData);
+  };
+
+  const contains = ({ name, singer }, query) => {
+    const nameTmp = name.toLowerCase();
+    const singerTmp = singer.toLowerCase();
+    if (nameTmp.includes(query) || singerTmp.includes(query)) {
+      return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    fetchMusic();
+  }, []);
+
   return (
     <SafeAreaView
       style={[styles.wrapper, { backgroundColor: theme.backgroundColor }]}
@@ -38,12 +85,17 @@ const Search = () => {
             style={styles.textInput}
             placeholder="Bạn muốn nghe gì?"
             placeholderTextColor="white"
-            color='white'
+            color="white"
+            value={searchQuery}
+            onChangeText={(query) => handleSearch(query)}
           />
         </Pressable>
-        <ScrollView>
-            
-        </ScrollView>
+        <FlatList
+          data={musicList}
+          renderItem={({ item }) => <SearchSong item={item} />}
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled={false}
+        />
       </View>
     </SafeAreaView>
   );

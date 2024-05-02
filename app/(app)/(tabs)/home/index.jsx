@@ -37,9 +37,10 @@ const Home = () => {
         name: doc.data().name,
         image: doc.data().image,
         albumId: doc.data().album,
+        musicList: doc.data().musicList
       });
     });
-
+    
     setAlbum(albumTmp);
     setHeaderAlbum(
       albumTmp.filter((item) => item.albumId === "Nổi Bật Hôm Nay")

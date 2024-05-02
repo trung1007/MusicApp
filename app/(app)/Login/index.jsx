@@ -49,7 +49,7 @@ const Login = () => {
       DataUser.forEach((doc) => {
         if (FIREBASE_AUTH.currentUser.email === doc.data().email) {
           user.ava = doc.data().ava;
-          user.name = doc.data().Name;
+          user.name = doc.data().name;
         }
       });
       AuthProvider.user = user;
