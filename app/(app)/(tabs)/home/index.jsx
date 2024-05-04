@@ -19,46 +19,50 @@ import SlideAlbum2 from "../../../../components/SlideAlbum2";
 import themeContext from "../../../../theme/themeContext";
 import { FIREBASE_DB } from "../../../../config/firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { useFetchMusic } from "../../../../GlobalSongState";
 
 const Home = () => {
   const theme = useContext(themeContext);
-  const [albumList, setAlbum] = useState([]);
-  const [headerAlbum, setHeaderAlbum] = useState([]);
-  const [album1, setAlbum1] = useState([]);
-  const [album2, setAlbum2] = useState([]);
-  const [album3, setAlbum3] = useState([]);
+  // const [albumList, setAlbum] = useState([]);
+  // const [headerAlbum, setHeaderAlbum] = useState([]);
+  // const [album1, setAlbum1] = useState([]);
+  // const [album2, setAlbum2] = useState([]);
+  // const [album3, setAlbum3] = useState([]);
 
-  const fetchAlbum = async () => {
-    const albumTmp = [];
+  const{headerAlbum1, album11, album21, album31} = useFetchMusic();
+  // setHeaderAlbum(headerAlbum1)
 
-    const AlbumList = await getDocs(collection(FIREBASE_DB, "AlbumList"));
-    AlbumList.forEach((doc) => {
-      albumTmp.push({
-        name: doc.data().name,
-        image: doc.data().image,
-        albumId: doc.data().album,
-        musicList: doc.data().musicList
-      });
-    });
+
+
+
+  // const fetchAlbum = async () => {
+  //   const albumTmp = [];
+
+  //   const AlbumList = await getDocs(collection(FIREBASE_DB, "AlbumList"));
+  //   AlbumList.forEach((doc) => {
+  //     albumTmp.push({
+  //       name: doc.data().name,
+  //       image: doc.data().image,
+  //       albumId: doc.data().album,
+  //       musicList: doc.data().musicList
+  //     });
+  //   });
     
-    setAlbum(albumTmp);
-    setHeaderAlbum(
-      albumTmp.filter((item) => item.albumId === "Nổi Bật Hôm Nay")
-    );
-    setAlbum1(
-      albumTmp.filter((item)=>item.albumId==="Có Thể Bạn Muốn Nghe")
-    )
-    setAlbum2(
-      albumTmp.filter((item)=>item.albumId==="Vừa Nghe Vừa Lak")
-    )
-    setAlbum3(
-      albumTmp.filter((item)=>item.albumId==="Chill")
-    )
-  };
+  //   setAlbum(albumTmp);
+  //   setHeaderAlbum(
+  //     albumTmp.filter((item) => item.albumId === "Nổi Bật Hôm Nay")
+  //   );
+  //   setAlbum1(
+  //     albumTmp.filter((item)=>item.albumId==="Có Thể Bạn Muốn Nghe")
+  //   )
+  //   setAlbum2(
+  //     albumTmp.filter((item)=>item.albumId==="Vừa Nghe Vừa Lak")
+  //   )
+  //   setAlbum3(
+  //     albumTmp.filter((item)=>item.albumId==="Chill")
+  //   )
+  // };
 
-  useEffect(() => {
-    fetchAlbum();
-  }, []);
 
   return (
     <SafeAreaView
@@ -75,7 +79,7 @@ const Home = () => {
             Nổi bật hôm nay
           </Text>
           <FlatList
-            data={headerAlbum}
+            data={headerAlbum1}
             renderItem={({ item }) => <SlideAblum1 item={item} />}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -90,7 +94,7 @@ const Home = () => {
             </Text>
           </TouchableOpacity>
           <FlatList
-            data={album1}
+            data={album11}
             renderItem={({ item }) => <SlideAlbum2 item={item} />}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -104,7 +108,7 @@ const Home = () => {
             </Text>
           </TouchableOpacity>
           <FlatList
-            data={album2}
+            data={album21}
             renderItem={({ item }) => <SlideAlbum2 item={item} />}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -118,7 +122,7 @@ const Home = () => {
             </Text>
           </TouchableOpacity>
           <FlatList
-            data={album3}
+            data={album31}
             renderItem={({ item }) => <SlideAlbum2 item={item} />}
             horizontal
             showsHorizontalScrollIndicator={false}

@@ -7,25 +7,38 @@ import { Entypo } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import themeContext from "../../../theme/themeContext";
+import { collection, getDocs } from "firebase/firestore";
+import { FIREBASE_DB } from "../../../config/firebase";
+
+
 
 const TabLayout = () => {
   const select = SongProvider.select;
-  const [song, setSong] = useState({})
+  const [song, setSong] = useState({});
+
+  const theme = useContext(themeContext);
+
+  
   useEffect(() => {
     if (select) {
       setSong(SongProvider.song);
     }
   }, [select]);
-  const theme = useContext(themeContext)
+
+
   return (
     <SongProvider>
       <Tabs
         screenOptions={{
           header: () => {
-            return <View style={{ height: 50, backgroundColor:theme.backgroundColor }}></View>;
+            return (
+              <View
+                style={{ height: 50, backgroundColor: theme.backgroundColor }}
+              ></View>
+            );
           },
           tabBarInactiveTintColor: theme.iconInActiveColor,
-          tabBarActiveTintColor:theme.iconActiveColor,
+          tabBarActiveTintColor: theme.iconActiveColor,
           tabBarStyle: {
             backgroundColor: theme.tabBarColor,
             position: "absolute",

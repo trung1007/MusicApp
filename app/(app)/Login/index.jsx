@@ -25,6 +25,7 @@ import { signInWithEmailAndPassword } from "@firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
 import { AntDesign } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
+// import { useFetchMusic } from "../../../GlobalSongState";
 
 const Login = () => {
   const theme = {
@@ -59,7 +60,10 @@ const Login = () => {
     }
   };
 
+
   useEffect(() => {
+    
+
     if (showSuccess == 1) {
       Alert.alert("Đăng nhập thành công");
       setTimeout(() => {
