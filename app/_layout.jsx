@@ -8,6 +8,7 @@ import themeContext from "../theme/themeContext";
 import theme from "../theme/theme";
 import { EventRegister } from "react-native-event-listeners";
 import TrackPlayer from "react-native-track-player";
+import { setupPlayer } from "../components/TrackPlayer";
 
 TrackPlayer.registerPlaybackService(() => require("../service.js"));
 
@@ -24,7 +25,7 @@ const RootLayout = () => {
       EventRegister.removeAllListeners(listener);
     };
   }, [darkMode]);
-
+  setupPlayer();
   return (
     <themeContext.Provider value={darkMode === true ? theme.dark : theme.light}>
       <AuthProvider>

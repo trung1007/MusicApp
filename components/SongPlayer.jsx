@@ -21,6 +21,7 @@ import { useNavigation } from "@react-navigation/native";
 import SongModal from "./SongModal";
 import { SongProvider } from "../context/SongContext";
 import themeContext from "../theme/themeContext";
+import { PlayPauseButton, SkipToNextButton, SkipToPreviousButton } from "./PlayerControl";
 
 const SongPlayer = () => {
   const theme = useContext(themeContext)
@@ -50,8 +51,14 @@ const SongPlayer = () => {
         <Text style={[styles.songName, { color: theme.color }]}>
           {song.name}
         </Text>
+        
         <Text style={[styles.songSinger]}>{song.singer}</Text>
       </View>
+      <View style={styles.trackControlContatiner}>
+          <SkipToPreviousButton iconSize={22} />
+					<PlayPauseButton iconSize={24} />
+					<SkipToNextButton iconSize={22} />
+				</View>
       {modalVisible && <SongModal item={song} toggleModal={toggleModal} />}
     </TouchableOpacity>
   );
@@ -89,6 +96,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: "gray",
   },
+  trackControlContatiner: {
+    flexDirection: 'row',
+		alignItems: 'center',
+		columnGap: 20,
+		marginRight: 16,
+		paddingLeft: 16,
+  }
 });
 
 export default SongPlayer;

@@ -20,6 +20,7 @@ import { useNavigation } from "@react-navigation/native";
 import SongModal from "./SongModal";
 import { SongProvider } from "../context/SongContext";
 import themeContext from "../theme/themeContext";
+import TrackPlayer from "react-native-track-player";
 const AlbumSong = ({ item }) => {
   const theme = useContext(themeContext)
 
@@ -30,9 +31,21 @@ const AlbumSong = ({ item }) => {
     setModalVisible(!modalVisible);
   };
 
-  const handleSelectSong = () => {
-    (SongProvider.song = item), (SongProvider.select = true);
+  const handleSelectSong = async () => {
+    const track = {
+      id: item.id,
+      url: item.music,
+      title: item.name,
+      artist: item.singer,
+      artwork: item.image,
+    };
+    (SongProvider.song = track), (SongProvider.select = true);
     toggleModal();
+    
+    await TrackPlayer.reset();
+    await TrackPlayer.add(track);
+    await TrackPlayer.play();
+    console.log(track);
   };
 
   return (

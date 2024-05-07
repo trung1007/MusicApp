@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   Dimensions,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import { Image } from 'expo-image';
 import TrackPlayer, {
@@ -19,50 +20,72 @@ import TrackPlayer, {
 import Slider from '@react-native-community/slider';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import podcasts from '../assets/data';
+import { SongProvider } from '../context/SongContext';
+import { Lyric } from 'react-native-lyric';
+export const setupPlayer = async () => {
+  try {
+    await TrackPlayer.setupPlayer();
+    await TrackPlayer.updateOptions({
+      capabilities: [
+        Capability.Play,
+        Capability.Pause,
+        Capability.SkipToNext,
+        Capability.SkipToPrevious
+      ],
+      //
+    });
+    console.log("setupPlayer");
+  } catch (error) { console.log(error); }
+};
 
 function MusicPlayer() {
-    const track = {
-        title: 'Reality',
-        artist: 'Lost Frequency',
-        artwork: 'https://firebasestorage.googleapis.com/v0/b/music-app-2c0fc.appspot.com/o/ChungTaLaGiCuaNhau.jpg?alt=media&token=ce3fb3bd-cc19-48e9-bbb2-b50add50a9c9',
-        url: require('../reality.mp3'),
-      }
-  
-  const podcastsCount = podcasts.length;
-//   console.log(podcasts);
-  const [trackIndex, setTrackIndex] = useState(0);
-  const [trackTitle, setTrackTitle] = useState();
-  const [trackArtist, setTrackArtist] = useState();
-  const [trackArtwork, setTrackArtwork] = useState();
-  
+  const lrc = `
+ [00:00.00]Dreamers 
+ [00:04.43]Jungkook BTS
+ [00:09.11]
+ [00:09.61] ....
+ [00:16.96]Look who we are, we are the dreamers
+ [00:20.94]We’ll make it happen ’cause we believe it
+ [00:24.68]Look who we are, we are the dreamers
+ [00:29.18]We’ll make it happen ’cause we can see it
+ [00:34.23]Here’s to the ones, that keep the passion
+ [00:37.69]Respect, oh yeah
+ [00:41.67]Here’s to the ones, that can imagine
+ [00:46.20]Respect, oh yeah
+ [01:07.19]Gather ’round now, look at me
+ [01:11.71]Respect the love the only way
+ [01:15.68]If you wanna come, come with me
+ [01:20.21]The door is open now every day
+ [01:23.67]This one plus two, rendezvous all at my day
+ [01:28.19]This what we do, how we do
+ [01:31.63]Look who we are, we are the dreamers
+ [01:35.89]We’ll make it happen ’cause we believe it
+ [01:39.62]Look who we are, we are the dreamers
+ [01:43.87]We’ll make it happen ’cause we can see it
+ [01:48.95]Here’s to the ones, that keep the passion
+ [01:52.44]Respect, oh yeah
+ [01:56.42]Here’s to the ones, that can imagine
+ [02:00.67]Respect, oh yeah
+ [02:22.26]Look who we are, we are the dreamers
+ [02:25.98]We’ll make it happen ’cause we believe it
+ [02:30.23]Look who we are, we are the dreamers
+ [02:33.95]We’ll make it happen ’cause we can see it
+ [02:38.99]Cause to the one that keep the passion
+ [02:42.45]Respect, oh yeah
+ [02:47.22]‘Cause to the one that got the magic
+ [02:51.21]Respect, oh yeah
+ `;
+  const currentSong = SongProvider.song;
+
   const playBackState = usePlaybackState();
   const progress = useProgress();
 
-  const setupPlayer = async () => {
-    try {
-      await TrackPlayer.setupPlayer();
-      await TrackPlayer.updateOptions({
-        capabilities: [
-          Capability.Play,
-          Capability.Pause,
-          Capability.SkipToNext,
-          Capability.SkipToPrevious
-        ],
-        //
-      });
-      // console.log(podcasts)
-     
-      await TrackPlayer.add(podcasts);
-      await gettrackdata();
-      // console.log(TrackPlayer);
-      await TrackPlayer.play();
-    } catch (error) { console.log(error); }
-  };
+
 
   useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
     if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
       const track = await TrackPlayer.getTrack(event.nextTrack);
-      const {title, artwork, artist} = track;
+      const { title, artwork, artist } = track;
       console.log(event.nextTrack);
       setTrackIndex(event.nextTrack);
       setTrackTitle(title);
@@ -75,11 +98,6 @@ function MusicPlayer() {
     let trackIndex = await TrackPlayer.getCurrentTrack();
     let trackObject = await TrackPlayer.getTrack(trackIndex);
     console.log(trackIndex);
-    setTrackIndex(trackIndex);
-    setTrackTitle(trackObject.title);
-    console.log(trackObject.title);
-    setTrackArtist(trackObject.artist);
-    setTrackArtwork(trackObject.artwork);
   };
 
   const togglePlayBack = async playBackState => {
@@ -87,16 +105,15 @@ function MusicPlayer() {
     const currentTrack = await TrackPlayer.getCurrentTrack();
     if (currentTrack != null) {
       if ((playBackState.state === State.Paused) || (playBackState.state === State.Ready)) {
-          await TrackPlayer.play();
-          
-        } else {
-          await TrackPlayer.pause();
-        }
+        await TrackPlayer.play();
+      } else {
+        await TrackPlayer.pause();
       }
-    };
+    }
+  };
 
   const nexttrack = async () => {
-    if (trackIndex < podcastsCount-1) {
+    if (trackIndex < podcastsCount - 1) {
       await TrackPlayer.skipToNext();
       gettrackdata();
     };
@@ -108,24 +125,20 @@ function MusicPlayer() {
       gettrackdata();
     };
   };
-  
-  useEffect(() => {
-    setupPlayer();
-    console.log(playBackState)
-  }, []);
+
 
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.mainContainer}>
         <View style={styles.mainWrapper}>
-          <Image source={track.artwork} style={styles.imageWrapper} />
+          <Image source={currentSong.artwork} style={styles.imageWrapper} />
         </View>
         <View style={styles.songText}>
-        {/* <Image source={track.artwork} /> */}
+          {/* <Image source={track.artwork} /> */}
           {/* <Text style={[styles.songContent, styles.songTitle]} numberOfLines={3}>{trackArtwork}</Text> */}
-          <Text style={[styles.songContent, styles.songTitle]} numberOfLines={3}>{trackTitle}</Text>
-          <Text style={[styles.songContent, styles.songArtist]} numberOfLines={2}>{trackArtist}</Text>
+          <Text style={[styles.songContent, styles.songTitle]} numberOfLines={3}>{currentSong.title}</Text>
+          <Text style={[styles.songContent, styles.songArtist]} numberOfLines={2}>{currentSong.artist}</Text>
         </View>
         <View>
           <Slider
@@ -136,7 +149,7 @@ function MusicPlayer() {
             thumbTintColor="#FFFFFF"
             minimumTrackTintColor="#FFFFFF"
             maximumTrackTintColor="#FFFFFF"
-            onSlidingComplete={async value => await TrackPlayer.seekTo(value) }
+            onSlidingComplete={async value => await TrackPlayer.seekTo(value)}
           />
           <View style={styles.progressLevelDuraiton}>
             <Text style={styles.progressLabelText}>
@@ -149,13 +162,13 @@ function MusicPlayer() {
         </View>
         <View style={styles.musicControlsContainer}>
           <TouchableOpacity onPress={previoustrack}>
-            <Ionicons 
-              name="play-skip-back-outline" 
-              size={35} 
-              color="#FFFFFFFF" 
+            <Ionicons
+              name="play-skip-back-outline"
+              size={35}
+              color="#FFFFFFFF"
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => togglePlayBack(playBackState) }>
+          <TouchableOpacity onPress={() => togglePlayBack(playBackState)}>
             <Ionicons
               name={
                 playBackState.state === State.Playing
@@ -175,13 +188,39 @@ function MusicPlayer() {
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+      <LyricsContainer lrc={lrc} currentTime={500}/>
+    </ScrollView>
   );
 };
 
 export default MusicPlayer;
 
-const {width, height} = Dimensions.get('window');
+export const LyricsContainer = ({ lrc, currentTime }) => {
+  console.log(lrc);
+  const lineRenderer = useCallback(
+    ({ lrcLine: { millisecond, content }, index, active }) => (
+      <Text
+        style={{ textAlign: 'center', color: active ? 'white' : 'gray' }}>
+        {content}
+      </Text>
+    ),
+    [],
+  );
+
+  return (
+    <View>
+      <Lyric
+      style={{ height: 500}}
+      lrc={lrc}
+      currentTime={currentTime}
+      lineHeight={16}
+      lineRenderer={lineRenderer}
+    />
+    </View>
+  );
+}
+
+const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -206,7 +245,7 @@ const styles = StyleSheet.create({
     borderRadius: 175,
   },
   songText: {
-    marginTop:2,
+    marginTop: 2,
     height: 70
   },
   songContent: {
@@ -224,8 +263,8 @@ const styles = StyleSheet.create({
   progressBar: {
     alignSelf: "stretch",
     marginTop: 40,
-    marginLeft:5,
-    marginRight:5
+    marginLeft: 5,
+    marginRight: 5
   },
   progressLevelDuraiton: {
     width: width,
