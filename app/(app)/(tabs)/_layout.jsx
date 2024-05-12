@@ -24,7 +24,7 @@ const TabLayout = () => {
       setSong(SongProvider.song);
     }
   }, [select]);
-
+  console.log(select)
 
   return (
     <SongProvider>
@@ -74,7 +74,7 @@ const TabLayout = () => {
           }}
         />
       </Tabs>
-      {select && <SongPlayer />}
+       <SongPlayer />
     </SongProvider>
   );
 };

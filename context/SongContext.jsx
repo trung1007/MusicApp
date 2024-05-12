@@ -9,8 +9,8 @@ export const useSongContext = () => useContext(SongContext)
 export const SongProvider = ({ children }) =>{
     const [song, setSong] = useState({
     })
-    const [select, setSelect] = useState(false)
-
+    const [select, setSelect] = useState(true)
+    // console.log(select)
     return (
         <SongContext.Provider
           value={{

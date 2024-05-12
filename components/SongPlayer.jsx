@@ -22,13 +22,25 @@ import SongModal from "./SongModal";
 import { SongProvider } from "../context/SongContext";
 import themeContext from "../theme/themeContext";
 import { PlayPauseButton, SkipToNextButton, SkipToPreviousButton } from "./PlayerControl";
+import { useActiveTrack } from "react-native-track-player";
 
 const SongPlayer = () => {
   const theme = useContext(themeContext)
   const [modalVisible, setModalVisible] = useState(false);
 
-  const song = SongProvider.song;
+  // const song = SongProvider.song;
+  // console.log(song);
+  const activeTrack = useActiveTrack();
+  console.log("ActiveTrack: ", activeTrack);
+  const displayedTrack = activeTrack?? {
+    title: "No active track",
+    artist: "No active track",
+    artwork: "https://via.placeholder.com/300",
+  };
+  console.log("DisplayedTrack: ", displayedTrack);
+  
 
+  
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
@@ -43,23 +55,23 @@ const SongPlayer = () => {
     >
       <Image
         source={{
-          uri: song.image,
+          uri: displayedTrack.artwork,
         }}
         style={styles.songImage}
       />
       <View style={styles.songInfo}>
         <Text style={[styles.songName, { color: theme.color }]}>
-          {song.name}
+          {displayedTrack.title}
         </Text>
         
-        <Text style={[styles.songSinger]}>{song.singer}</Text>
+        <Text style={[styles.songSinger]}>{displayedTrack.artist}</Text>
       </View>
       <View style={styles.trackControlContatiner}>
           <SkipToPreviousButton iconSize={22} />
 					<PlayPauseButton iconSize={24} />
 					<SkipToNextButton iconSize={22} />
 				</View>
-      {modalVisible && <SongModal item={song} toggleModal={toggleModal} />}
+      {modalVisible && <SongModal item={displayedTrack} toggleModal={toggleModal} />}
     </TouchableOpacity>
   );
 };

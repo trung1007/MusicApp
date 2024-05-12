@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import useTimer from './time';
 import {
   View,
   Text,
@@ -16,6 +17,7 @@ import TrackPlayer, {
   usePlaybackState,
   useProgress,
   useTrackPlayerEvents,
+  useActiveTrack,
 } from 'react-native-track-player';
 import Slider from '@react-native-community/slider';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -75,7 +77,11 @@ function MusicPlayer() {
  [02:47.22]‘Cause to the one that got the magic
  [02:51.21]Respect, oh yeah
  `;
-  const currentSong = SongProvider.song;
+  const currentSong = useActiveTrack()?? {
+    title: "No song",
+    artist: "No artist",
+    artwork: "https://via.placeholder.com/300",
+  }
 
   const playBackState = usePlaybackState();
   const progress = useProgress();
@@ -140,6 +146,13 @@ function MusicPlayer() {
           <Text style={[styles.songContent, styles.songTitle]} numberOfLines={3}>{currentSong.title}</Text>
           <Text style={[styles.songContent, styles.songArtist]} numberOfLines={2}>{currentSong.artist}</Text>
         </View>
+        <View style={styles.lyricsContainer}>
+          <LyricsContainer lrc={`
+ [00:00.00]Dreamers 
+ [00:04.43]Jungkook BTS
+ [00:09.11]`} currentTime={0}/>
+        </View>
+         
         <View>
           <Slider
             style={styles.progressBar}
@@ -187,8 +200,11 @@ function MusicPlayer() {
             />
           </TouchableOpacity>
         </View>
+        
       </View>
-      <LyricsContainer lrc={lrc} currentTime={500}/>
+      <View>
+      
+      </View>
     </ScrollView>
   );
 };
@@ -196,27 +212,48 @@ function MusicPlayer() {
 export default MusicPlayer;
 
 export const LyricsContainer = ({ lrc, currentTime }) => {
-  console.log(lrc);
+  const {
+    currentMillisecond,
+    setCurrentMillisecond,
+    reset,
+    play,
+    pause
+  } = useTimer(1);
+  // console.log(lrc);
   const lineRenderer = useCallback(
-    ({ lrcLine: { millisecond, content }, index, active }) => (
-      <Text
-        style={{ textAlign: 'center', color: active ? 'white' : 'gray' }}>
-        {content}
-      </Text>
-    ),
+    ({ lrcLine: { millisecond, content }, index, active }) => {
+      console.log(content);
+      return (
+        <Text
+          style={{ textAlign: 'center', color: active ? 'white' : 'gray' }}>
+          {content}
+        </Text>
+      )
+    },
+    [],
+  );
+  const onCurrentLineChange = useCallback(
+    ({ lrcLine: { millisecond, content }, index }) =>
+      console.log(index, millisecond, content),
     [],
   );
 
   return (
-    <View>
-      <Lyric
-      style={{ height: 500}}
+   <View>
+    <Lyric
+      // style={{ height: 300}}
       lrc={lrc}
-      currentTime={currentTime}
+      currentTime={currentMillisecond}
       lineHeight={16}
       lineRenderer={lineRenderer}
+      autoScroll
+      autoScrollAfterUserScroll={500}
+      // onCurrentLineChange={onCurrentLineChange}
     />
-    </View>
+    <Text style={{color: 'white'}}>Hello world</Text>
+   </View>
+      
+
   );
 }
 
@@ -283,4 +320,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '60%',
   },
+  lyricsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    color: '#FFF',
+    backgroundColor: '#000000',
+    // padding: 100
+  }
 });
