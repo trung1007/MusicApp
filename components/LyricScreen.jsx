@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, FlatList, StyleSheet } from 'react-native'
+import { View, Text, FlatList, StyleSheet, Dimensions } from 'react-native'
 export default function LyricScreen({lines, currentTime}) {
     console.log("line",lines);
     // console.log("currentTime",currentTime);
@@ -19,10 +19,12 @@ export default function LyricScreen({lines, currentTime}) {
 const style = StyleSheet.create({
     highlight: {
         color: 'blue',
-        textAlign: 'center'
+        textAlign: 'center',
+        width: Dimensions.get('screen').width
     },
     normal: {
         color: 'white',
-        textAlign: 'center'
+        textAlign: 'center',
+        width: Dimensions.get('screen').width
     }
 })

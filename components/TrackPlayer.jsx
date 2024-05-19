@@ -108,10 +108,13 @@ function MusicPlayer() {
   return (
     <View style={styles.container}>
       <View style={styles.mainContainer}>
-        <View style={styles.mainWrapper}>
-          <Image source={currentSong.artwork} style={styles.imageWrapper} />
-          
-        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} pagingEnabled>
+          <View style={styles.mainWrapper}>
+            <Image source={currentSong.artwork} style={styles.imageWrapper} />
+          </View>
+          <LyricScreen lines={parse(lrc)} currentTime={progress.position * 1000} />
+        </ScrollView>
+        
         <View style={styles.songText}>
           {/* <Image source={track.artwork} /> */}
           {/* <Text style={[styles.songContent, styles.songTitle]} numberOfLines={3}>{trackArtwork}</Text> */}
@@ -119,7 +122,7 @@ function MusicPlayer() {
           <Text text style={[styles.songContent, styles.songArtist]} numberOfLines={2}>{currentSong.artist}</Text>
           
         </View>
-        <LyricScreen lines={parse(lrc)} currentTime={progress.position * 1000} />
+        
           
         
         <View>
