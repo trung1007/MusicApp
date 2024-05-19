@@ -50,8 +50,8 @@ const SongModal = ({ item, toggleModal }) => {
       <SafeAreaView
         style={[styles.wrapper, { backgroundColor: theme.backgroundColor }]}
       >
-        <TouchableOpacity onPress={closeModal} style={{ paddingLeft: 10 }}>
-          <AntDesign name="down" size={24} style={{ color: theme.color }} />
+        <TouchableOpacity onPress={closeModal} style={{ backgroundColor:'#222831' ,paddingLeft: 10 }}>
+          <AntDesign name="down" size={24} style={{ color: 'white' }} />
         </TouchableOpacity>
         {/* <View style={styles.content}>
           <Image source={{ uri: item.image }} style={styles.songImage} />

@@ -123,7 +123,6 @@ function MusicPlayer() {
           
         </View>
         
-          
         
         <View>
           <Slider
@@ -222,7 +221,7 @@ const styles = StyleSheet.create({
   },
   mainWrapper: {
     width: width,
-    height: width,
+    // height: width,
     justifyContent: 'center',
     alignItems: 'center',
   },

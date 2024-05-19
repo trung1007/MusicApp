@@ -20,11 +20,13 @@ const style = StyleSheet.create({
     highlight: {
         color: 'blue',
         textAlign: 'center',
-        width: Dimensions.get('screen').width
+        width: Dimensions.get('screen').width,
+        fontSize:16
     },
     normal: {
         color: 'white',
         textAlign: 'center',
-        width: Dimensions.get('screen').width
+        width: Dimensions.get('screen').width,
+        fontSize:16
     }
 })
