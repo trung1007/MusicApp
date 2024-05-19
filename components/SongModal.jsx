@@ -22,9 +22,6 @@ import {
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
 import MusicPlayer, { LyricsContainer } from "./TrackPlayer";
-import SongDetailScreen from "./SongDetailScreen";
-import StandAloneLyricComponent from "./StandAloneLyricComponent";
-import TrackPlayer, { useProgress } from "react-native-track-player";
 
 
 const SongModal = ({ item, toggleModal }) => {

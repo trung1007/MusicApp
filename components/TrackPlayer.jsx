@@ -26,85 +26,72 @@ import podcasts from '../assets/data';
 import { SongProvider } from '../context/SongContext';
 import { Lyric } from 'react-native-lyric';
 import { SkipToNextButton, PlayPauseButton, SkipToPreviousButton } from './PlayerControl';
-import LyricScreen from './LyricScreen';
+import LyricScreen from './LyricScreen.jsx';
 
 function MusicPlayer() {
   const activeTrack = useActiveTrack();
   
-  const lrc = `[00:11.67]Anh tìm nỗi nhớ
-[00:14.53]Anh tìm quá khứ
-[00:17.16]Nhớ lắm kí ức anh và em
-[00:22.10]Trả lại anh yêu thương ấy
-[00:24.76]xin người hãy về nơi đây
-[00:27.34]Bàn tay yếu ớt cố níu em ở lại
-[00:33.23]Những giọt nước mắt
-[00:35.78]Lăn dài trên mi
-[00:38.63]Cứ thế anh biết phải làm sao?
-[00:43.42]Tình yêu trong em đã mất
-[00:46.15]phai dần đi theo gió bay
-[00:48.83]Còn lại chi nơi đây
-[00:50.63]cô đơn riêng anh
-[00:54.89]Em đi xa quá
-[00:57.02]Em đi xa anh quá
-[00:59.64]Có biết không nơi đây
-[01:01.50]anh vẫn đứng đợi một giấc mơ
-[01:05.11]Anh chờ đợi một cơn mưa
-[01:07.74]sẽ xoá sạch giọt nước mắt
-[01:10.41]Ngồi trong đêm bơ vơ
-[01:12.16]anh thấy đau em có biết không?
-[01:16.24]Em ơi anh nhớ
-[01:18.49]Em ơi anh rất nhớ
-[01:21.16]Từng câu nói ánh mắt
-[01:22.83]của em giờ này ở nơi đâu?
-[01:26.43]Chắc ai đó sẽ sớm quay lại thôi
-[01:29.12]Chắc ai đó sẽ sớm quay về thôi
-[01:31.80]Cầm bông hoa trên tay nước mắt rơi
-[01:36.28]Anh nhớ em
-[01:51.42]Những giọt nước mắt
-[01:53.97]Lăn dài trên mi
-[01:56.82]Cứ thế anh biết phải làm sao?
-[02:01.61]Tình yêu trong em đã mất
-[02:04.34]phai dần đi theo gió bay
-[02:07.02]Còn lại chi nơi đây
-[02:08.82]cô đơn riêng anh
-[02:12.88]Em đi xa quá
-[02:15.01]Em đi xa anh quá
-[02:17.63]Có biết không nơi đây
-[02:19.49]anh vẫn đứng đợi một giấc mơ
-[02:23.10]Anh chờ đợi một cơn mưa
-[02:25.73]sẽ xoá sạch giọt nước mắt
-[02:28.40]Ngồi trong đêm bơ vơ
-[02:30.15]anh thấy đau em có biết không?
-[02:34.23]Em ơi anh nhớ
-[02:36.48]Em ơi anh rất nhớ
-[02:39.15]Từng câu nói ánh mắt
-[02:40.82]của em giờ này ở nơi đâu?
-[02:44.42]Chắc ai đó sẽ sớm quay lại thôi
-[02:47.11]Chắc ai đó sẽ sớm quay về thôi
-[02:49.79]Cầm bông hoa trên tay nước mắt rơi
-[02:54.27]Anh nhớ em
-[03:17.62]Anh sẽ mãi nhớ thật nhiều
-[03:20.43]những thứ thuộc về em
-[03:22.54]Trong tim này
-[03:23.48]vẫn mãi yêu người
-[03:24.84]riêng em
-[03:27.97]Uh oh
-[03:30.72]Em đi xa quá
-[03:32.92]Em đi xa anh quá
-[03:35.53]Có biết không nơi đây
-[03:37.35]anh vẫn đứng đợi một giấc mơ
-[03:40.84]Anh chờ đợi một cơn mưa
-[03:43.51]sẽ xoá sạch giọt nước mắt
-[03:46.19]Ngồi trong đêm bơ vơ
-[03:48.06]anh thấy đau em có biết không?
-[03:51.98]Em ơi anh nhớ
-[03:54.34]Em ơi anh rất nhớ
-[03:57.03]Từng câu nói ánh mắt
-[03:58.73]của em giờ này ở nơi đâu?
-[04:02.28]Chắc ai đó sẽ sớm quay lại thôi
-[04:04.97]Chắc ai đó sẽ sớm quay về thôi
-[04:07.65]Cầm bông hoa trên tay nước mắt rơi
-[04:12.12]Anh nhớ em`;
+  const lrc = 
+`[00:45.098]Xua tan bộn bề nơi anh
+[00:48.095]Bao ngày qua niềm thương nỗi nhớ
+[00:51.021]Bay theo bầu trời trong xanh
+[00:54.005]Lướt đôi hàng mi
+[00:57.013]Mong manh anh thẫn thờ
+[00:59.040]Muốn hôn nhẹ mái tóc
+[01:01.034]Bờ môi em anh mơ
+[01:04.053]Cầm tay anh dựa vai anh
+[01:07.021]Kề bên anh nơi này có anh
+[01:09.051]Gió mang câu tình ca
+[01:10.099]Ngàn ánh sao vụt qua
+[01:12.010]Nhẹ ôm lấy em
+[01:15.008]Cầm tay anh dựa vai anh
+[01:17.070]Kề bên anh nơi này có anh
+[01:19.092]Khép đôi mi thật lâu
+[01:21.037]Nguyện mãi bên cạnh nhau
+[01:22.051]Yêu say đắm như ngày đầu
+[01:25.023]Mùa xuân đến bình yên
+[01:28.042]Cho anh những giấc mơ
+[01:30.043]Hạ lưu giữ ngày mưa
+[01:33.068]Ngọt ngào nên thơ
+[01:35.065]Mùa thu lá vàng rơi
+[01:38.077]Đông sang anh nhớ em
+[01:40.083]Tình yêu bé nhỏ xin
+[01:44.000]Dành tặng riêng em
+[01:57.029]Còn đó tiếng nói ấy
+[01:58.036]Bên tai vấn vương bao ngày qua
+[02:00.010]Ánh mắt bối rối
+[02:00.091]Nhớ thương bao ngày qua
+[02:02.077]Yêu em anh thẫn thờ
+[02:03.081]Con tim bâng khuâng đâu có ngờ
+[02:05.006]Chẳng bao giờ phải mong chờ
+[02:06.048]Đợi ai trong chiều hoàng hôn mờ
+[02:07.084]Đắm chìm hoà vào vần thơ
+[02:09.015]Ngắm nhìn khờ dại mộng mơ
+[02:10.040]Đừng bước vội vàng rồi làm ngơ
+[02:11.066]Lạnh lùng đó làm bộ dạng thờ ơ
+[02:13.000]Nhìn anh đi em nha
+[02:13.090]Hướng nụ cười cho riêng anh nha
+[02:15.010]Đơn giản là yêu
+[02:15.082]Con tim anh lên tiếng thôi
+[02:17.065]Cầm tay anh dựa vai anh
+[02:20.033]Kề bên anh nơi này có anh
+[02:22.057]Gió mang câu tình ca
+[02:24.001]Ngàn ánh sao vụt qua
+[02:25.009]Nhẹ ôm lấy em
+[02:28.004]Cầm tay anh dựa vai anh
+[02:30.066]Kề bên anh nơi này có anh
+[02:32.095]Khép đôi mi thật lâu
+[02:34.046]Nguyện mãi bên cạnh nhau
+[02:35.057]Yêu say đắm như ngày đầu
+[02:38.027]Mùa xuân đến bình yên
+[02:41.042]Cho anh những giấc mơ
+[02:43.036]Hạ lưu giữ ngày mưa
+[02:46.066]Ngọt ngào nên thơ
+[02:48.079]Mùa thu lá vàng rơi
+[02:51.091]Đông sang anh nhớ em
+[02:53.084]Tình yêu bé nhỏ xin
+[02:57.002]Dành tặng riêng em
+[03:02.059]Nhớ thương em`;
   
  const lines = parse(lrc);
   const currentSong = useActiveTrack()?? {
@@ -132,7 +119,7 @@ function MusicPlayer() {
           <Text text style={[styles.songContent, styles.songArtist]} numberOfLines={2}>{currentSong.artist}</Text>
           
         </View>
-        <LyricScreen lrc={lines} currentTime={progress.position * 1000} />
+        <LyricScreen lines={parse(lrc)} currentTime={progress.position * 1000} />
           
         
         <View>
