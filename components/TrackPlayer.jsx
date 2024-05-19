@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import useTimer from './time';
+import {parse} from 'clrc';
 import {
   View,
   Text,
@@ -24,59 +25,88 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import podcasts from '../assets/data';
 import { SongProvider } from '../context/SongContext';
 import { Lyric } from 'react-native-lyric';
-export const setupPlayer = async () => {
-  try {
-    await TrackPlayer.setupPlayer();
-    await TrackPlayer.updateOptions({
-      capabilities: [
-        Capability.Play,
-        Capability.Pause,
-        Capability.SkipToNext,
-        Capability.SkipToPrevious
-      ],
-      //
-    });
-    console.log("setupPlayer");
-  } catch (error) { console.log(error); }
-};
+import { SkipToNextButton, PlayPauseButton, SkipToPreviousButton } from './PlayerControl';
+import LyricScreen from './LyricScreen';
 
 function MusicPlayer() {
-  const lrc = `
- [00:00.00]Dreamers 
- [00:04.43]Jungkook BTS
- [00:09.11]
- [00:09.61] ....
- [00:16.96]Look who we are, we are the dreamers
- [00:20.94]We’ll make it happen ’cause we believe it
- [00:24.68]Look who we are, we are the dreamers
- [00:29.18]We’ll make it happen ’cause we can see it
- [00:34.23]Here’s to the ones, that keep the passion
- [00:37.69]Respect, oh yeah
- [00:41.67]Here’s to the ones, that can imagine
- [00:46.20]Respect, oh yeah
- [01:07.19]Gather ’round now, look at me
- [01:11.71]Respect the love the only way
- [01:15.68]If you wanna come, come with me
- [01:20.21]The door is open now every day
- [01:23.67]This one plus two, rendezvous all at my day
- [01:28.19]This what we do, how we do
- [01:31.63]Look who we are, we are the dreamers
- [01:35.89]We’ll make it happen ’cause we believe it
- [01:39.62]Look who we are, we are the dreamers
- [01:43.87]We’ll make it happen ’cause we can see it
- [01:48.95]Here’s to the ones, that keep the passion
- [01:52.44]Respect, oh yeah
- [01:56.42]Here’s to the ones, that can imagine
- [02:00.67]Respect, oh yeah
- [02:22.26]Look who we are, we are the dreamers
- [02:25.98]We’ll make it happen ’cause we believe it
- [02:30.23]Look who we are, we are the dreamers
- [02:33.95]We’ll make it happen ’cause we can see it
- [02:38.99]Cause to the one that keep the passion
- [02:42.45]Respect, oh yeah
- [02:47.22]‘Cause to the one that got the magic
- [02:51.21]Respect, oh yeah
- `;
+  const activeTrack = useActiveTrack();
+  
+  const lrc = `[00:11.67]Anh tìm nỗi nhớ
+[00:14.53]Anh tìm quá khứ
+[00:17.16]Nhớ lắm kí ức anh và em
+[00:22.10]Trả lại anh yêu thương ấy
+[00:24.76]xin người hãy về nơi đây
+[00:27.34]Bàn tay yếu ớt cố níu em ở lại
+[00:33.23]Những giọt nước mắt
+[00:35.78]Lăn dài trên mi
+[00:38.63]Cứ thế anh biết phải làm sao?
+[00:43.42]Tình yêu trong em đã mất
+[00:46.15]phai dần đi theo gió bay
+[00:48.83]Còn lại chi nơi đây
+[00:50.63]cô đơn riêng anh
+[00:54.89]Em đi xa quá
+[00:57.02]Em đi xa anh quá
+[00:59.64]Có biết không nơi đây
+[01:01.50]anh vẫn đứng đợi một giấc mơ
+[01:05.11]Anh chờ đợi một cơn mưa
+[01:07.74]sẽ xoá sạch giọt nước mắt
+[01:10.41]Ngồi trong đêm bơ vơ
+[01:12.16]anh thấy đau em có biết không?
+[01:16.24]Em ơi anh nhớ
+[01:18.49]Em ơi anh rất nhớ
+[01:21.16]Từng câu nói ánh mắt
+[01:22.83]của em giờ này ở nơi đâu?
+[01:26.43]Chắc ai đó sẽ sớm quay lại thôi
+[01:29.12]Chắc ai đó sẽ sớm quay về thôi
+[01:31.80]Cầm bông hoa trên tay nước mắt rơi
+[01:36.28]Anh nhớ em
+[01:51.42]Những giọt nước mắt
+[01:53.97]Lăn dài trên mi
+[01:56.82]Cứ thế anh biết phải làm sao?
+[02:01.61]Tình yêu trong em đã mất
+[02:04.34]phai dần đi theo gió bay
+[02:07.02]Còn lại chi nơi đây
+[02:08.82]cô đơn riêng anh
+[02:12.88]Em đi xa quá
+[02:15.01]Em đi xa anh quá
+[02:17.63]Có biết không nơi đây
+[02:19.49]anh vẫn đứng đợi một giấc mơ
+[02:23.10]Anh chờ đợi một cơn mưa
+[02:25.73]sẽ xoá sạch giọt nước mắt
+[02:28.40]Ngồi trong đêm bơ vơ
+[02:30.15]anh thấy đau em có biết không?
+[02:34.23]Em ơi anh nhớ
+[02:36.48]Em ơi anh rất nhớ
+[02:39.15]Từng câu nói ánh mắt
+[02:40.82]của em giờ này ở nơi đâu?
+[02:44.42]Chắc ai đó sẽ sớm quay lại thôi
+[02:47.11]Chắc ai đó sẽ sớm quay về thôi
+[02:49.79]Cầm bông hoa trên tay nước mắt rơi
+[02:54.27]Anh nhớ em
+[03:17.62]Anh sẽ mãi nhớ thật nhiều
+[03:20.43]những thứ thuộc về em
+[03:22.54]Trong tim này
+[03:23.48]vẫn mãi yêu người
+[03:24.84]riêng em
+[03:27.97]Uh oh
+[03:30.72]Em đi xa quá
+[03:32.92]Em đi xa anh quá
+[03:35.53]Có biết không nơi đây
+[03:37.35]anh vẫn đứng đợi một giấc mơ
+[03:40.84]Anh chờ đợi một cơn mưa
+[03:43.51]sẽ xoá sạch giọt nước mắt
+[03:46.19]Ngồi trong đêm bơ vơ
+[03:48.06]anh thấy đau em có biết không?
+[03:51.98]Em ơi anh nhớ
+[03:54.34]Em ơi anh rất nhớ
+[03:57.03]Từng câu nói ánh mắt
+[03:58.73]của em giờ này ở nơi đâu?
+[04:02.28]Chắc ai đó sẽ sớm quay lại thôi
+[04:04.97]Chắc ai đó sẽ sớm quay về thôi
+[04:07.65]Cầm bông hoa trên tay nước mắt rơi
+[04:12.12]Anh nhớ em`;
+  
+ const lines = parse(lrc);
   const currentSong = useActiveTrack()?? {
     title: "No song",
     artist: "No artist",
@@ -85,74 +115,26 @@ function MusicPlayer() {
 
   const playBackState = usePlaybackState();
   const progress = useProgress();
-
-
-
-  useTrackPlayerEvents([Event.PlaybackTrackChanged], async event => {
-    if (event.type === Event.PlaybackTrackChanged && event.nextTrack !== null) {
-      const track = await TrackPlayer.getTrack(event.nextTrack);
-      const { title, artwork, artist } = track;
-      console.log(event.nextTrack);
-      setTrackIndex(event.nextTrack);
-      setTrackTitle(title);
-      setTrackArtist(artist);
-      setTrackArtwork(artwork);
-    }
-  });
-
-  const gettrackdata = async () => {
-    let trackIndex = await TrackPlayer.getCurrentTrack();
-    let trackObject = await TrackPlayer.getTrack(trackIndex);
-    console.log(trackIndex);
-  };
-
-  const togglePlayBack = async playBackState => {
-    console.log('togglePlayBack', playBackState);
-    const currentTrack = await TrackPlayer.getCurrentTrack();
-    if (currentTrack != null) {
-      if ((playBackState.state === State.Paused) || (playBackState.state === State.Ready)) {
-        await TrackPlayer.play();
-      } else {
-        await TrackPlayer.pause();
-      }
-    }
-  };
-
-  const nexttrack = async () => {
-    if (trackIndex < podcastsCount - 1) {
-      await TrackPlayer.skipToNext();
-      gettrackdata();
-    };
-  };
-
-  const previoustrack = async () => {
-    if (trackIndex > 0) {
-      await TrackPlayer.skipToPrevious();
-      gettrackdata();
-    };
-  };
-
+  console.log(progress);
 
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.mainContainer}>
         <View style={styles.mainWrapper}>
           <Image source={currentSong.artwork} style={styles.imageWrapper} />
+          
         </View>
         <View style={styles.songText}>
           {/* <Image source={track.artwork} /> */}
           {/* <Text style={[styles.songContent, styles.songTitle]} numberOfLines={3}>{trackArtwork}</Text> */}
           <Text style={[styles.songContent, styles.songTitle]} numberOfLines={3}>{currentSong.title}</Text>
-          <Text style={[styles.songContent, styles.songArtist]} numberOfLines={2}>{currentSong.artist}</Text>
+          <Text text style={[styles.songContent, styles.songArtist]} numberOfLines={2}>{currentSong.artist}</Text>
+          
         </View>
-        <View style={styles.lyricsContainer}>
-          <LyricsContainer lrc={`
- [00:00.00]Dreamers 
- [00:04.43]Jungkook BTS
- [00:09.11]`} currentTime={0}/>
-        </View>
-         
+        <LyricScreen lrc={lines} currentTime={progress.position * 1000} />
+          
+        
         <View>
           <Slider
             style={styles.progressBar}
@@ -173,45 +155,24 @@ function MusicPlayer() {
             </Text>
           </View>
         </View>
-        <View style={styles.musicControlsContainer}>
-          <TouchableOpacity onPress={previoustrack}>
-            <Ionicons
-              name="play-skip-back-outline"
-              size={35}
-              color="#FFFFFFFF"
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => togglePlayBack(playBackState)}>
-            <Ionicons
-              name={
-                playBackState.state === State.Playing
-                  ? 'pause-circle-outline'
-                  : 'play-circle-outline'
-              }
-              size={50}
-              color="#FFFFFF"
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={nexttrack}>
-            <Ionicons
-              name="play-skip-forward-outline"
-              size={35}
-              color="#FFFFFF"
-            />
-          </TouchableOpacity>
-        </View>
+        <View style={styles.trackControlContatiner}>
+          <SkipToPreviousButton iconSize={22} />
+					<PlayPauseButton iconSize={24} />
+					<SkipToNextButton iconSize={22} />
+				</View>
         
       </View>
       <View>
       
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
 export default MusicPlayer;
 
 export const LyricsContainer = ({ lrc, currentTime }) => {
+  // console.log(lrc);
   const {
     currentMillisecond,
     setCurrentMillisecond,
@@ -222,10 +183,10 @@ export const LyricsContainer = ({ lrc, currentTime }) => {
   // console.log(lrc);
   const lineRenderer = useCallback(
     ({ lrcLine: { millisecond, content }, index, active }) => {
-      console.log(content);
+      console.log(content, index, active);
       return (
         <Text
-          style={{ textAlign: 'center', color: active ? 'white' : 'gray' }}>
+          style={{ textAlign: 'center', color: active ? 'black' : 'red' }}>
           {content}
         </Text>
       )
@@ -241,16 +202,16 @@ export const LyricsContainer = ({ lrc, currentTime }) => {
   return (
    <View>
     <Lyric
-      // style={{ height: 300}}
+      style={{ height: 300, flex: 1}}
       lrc={lrc}
-      currentTime={currentMillisecond}
+      currentTime={500}
       lineHeight={16}
       lineRenderer={lineRenderer}
       autoScroll
       autoScrollAfterUserScroll={500}
       // onCurrentLineChange={onCurrentLineChange}
     />
-    <Text style={{color: 'white'}}>Hello world</Text>
+    <Text style={{color: 'black'}}>Hello world</Text>
    </View>
       
 
@@ -320,11 +281,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '60%',
   },
-  lyricsContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    color: '#FFF',
-    backgroundColor: '#000000',
-    // padding: 100
+  trackControlContatiner: {
+    flexDirection: 'row',
+		alignItems: 'center',
+		columnGap: 20,
+		marginRight: 16,
+		paddingLeft: 16,
   }
 });

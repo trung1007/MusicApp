@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from "react";
+import { parse } from "clrc";
 import {
   View,
   Button,
@@ -21,9 +22,13 @@ import {
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
 import MusicPlayer, { LyricsContainer } from "./TrackPlayer";
+import SongDetailScreen from "./SongDetailScreen";
+import StandAloneLyricComponent from "./StandAloneLyricComponent";
+import TrackPlayer, { useProgress } from "react-native-track-player";
 
 
 const SongModal = ({ item, toggleModal }) => {
+  
   const [showingLyrics, setShowingLyrics] = useState(true);
   const theme = {
     backgroundColor:'white',
@@ -58,14 +63,17 @@ const SongModal = ({ item, toggleModal }) => {
           </Text>
           <Text style={[styles.songSinger]}>{item.singer}</Text>
         </View> */}
-        
+        {/* <StandAloneLyricComponent lrc={lines} currentTime={useProgress().position * 1000}/> */}
         <MusicPlayer />
+        {/* <SongDetailScreen /> */}
         {/* <LyricsContainer lrc={lrc} currentTime={0}/> */}
       </SafeAreaView>
     </Modal>
   );
 };
 const lrc = `
+[ar:张叶蕾]
+something wrong
 [00:00.00]Dreamers 
 [00:04.43]Jungkook BTS
 [00:09.11]
@@ -101,6 +109,7 @@ const lrc = `
 [02:47.22]‘Cause to the one that got the magic
 [02:51.21]Respect, oh yeah
 `;
+const lines = parse(lrc);
 
 const styles = StyleSheet.create({
   modalContent: {
