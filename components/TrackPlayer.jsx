@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import useTimer from './time';
-import {parse} from 'clrc';
+import { parse } from 'clrc';
+import storage from '@react-native-firebase/storage'
 import {
   View,
   Text,
@@ -28,11 +29,26 @@ import { Lyric } from 'react-native-lyric';
 import { SkipToNextButton, PlayPauseButton, SkipToPreviousButton } from './PlayerControl';
 import LyricScreen from './LyricScreen.jsx';
 
+export const getLRC = async (lrcFile) => {
+  try {
+    // const reference = storage().ref(lrcFile);
+    // const url = await reference.getDownloadURL();
+    const response = await fetch(lrcFile);
+    const text = await response.text();
+    console.log(text);
+    const lrc = parse(text);
+    return lrc;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 function MusicPlayer() {
   const activeTrack = useActiveTrack();
-  
-  const lrc = 
-`[00:45.098]Xua tan bộn bề nơi anh
+  console.log(activeTrack);
+
+  const lrc =
+    `[00:45.098]Xua tan bộn bề nơi anh
 [00:48.095]Bao ngày qua niềm thương nỗi nhớ
 [00:51.021]Bay theo bầu trời trong xanh
 [00:54.005]Lướt đôi hàng mi
@@ -92,9 +108,9 @@ function MusicPlayer() {
 [02:53.084]Tình yêu bé nhỏ xin
 [02:57.002]Dành tặng riêng em
 [03:02.059]Nhớ thương em`;
-  
- const lines = parse(lrc);
-  const currentSong = useActiveTrack()?? {
+  const lyricLink = "https://firebasestorage.googleapis.com/v0/b/music-app-2c0fc.appspot.com/o/Music%2FHoa%20N%E1%BB%9F%20Kh%C3%B4ng%20M%C3%A0u%2Fhoanokhongmau.txt?alt=media&token=290611d3-9fe7-4da8-a8a1-1979bb80fcd9";
+  const lines = getLRC() ?? [];
+  const currentSong = useActiveTrack() ?? {
     title: "No song",
     artist: "No artist",
     artwork: "https://via.placeholder.com/300",
@@ -103,6 +119,7 @@ function MusicPlayer() {
   const playBackState = usePlaybackState();
   const progress = useProgress();
   console.log(progress);
+  console.log(activeTrack);
 
 
   return (
@@ -111,20 +128,16 @@ function MusicPlayer() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} pagingEnabled>
           <View style={styles.mainWrapper}>
             <Image source={currentSong.artwork} style={styles.imageWrapper} />
+            <View style={styles.songText}>
+              {/* <Image source={track.artwork} /> */}
+              {/* <Text style={[styles.songContent, styles.songTitle]} numberOfLines={3}>{trackArtwork}</Text> */}
+              <Text style={[styles.songContent, styles.songTitle]} numberOfLines={3}>{currentSong.title}</Text>
+              <Text text style={[styles.songContent, styles.songArtist]} numberOfLines={2}>{currentSong.artist}</Text>
+            </View>
           </View>
           <LyricScreen lines={parse(lrc)} currentTime={progress.position * 1000} />
         </ScrollView>
-        
-        <View style={styles.songText}>
-          {/* <Image source={track.artwork} /> */}
-          {/* <Text style={[styles.songContent, styles.songTitle]} numberOfLines={3}>{trackArtwork}</Text> */}
-          <Text style={[styles.songContent, styles.songTitle]} numberOfLines={3}>{currentSong.title}</Text>
-          <Text text style={[styles.songContent, styles.songArtist]} numberOfLines={2}>{currentSong.artist}</Text>
-          
-        </View>
-        
-          
-        
+
         <View>
           <Slider
             style={styles.progressBar}
@@ -146,14 +159,14 @@ function MusicPlayer() {
           </View>
         </View>
         <View style={styles.trackControlContatiner}>
-          <SkipToPreviousButton iconSize={22} />
-					<PlayPauseButton iconSize={24} />
-					<SkipToNextButton iconSize={22} />
-				</View>
-        
+          <SkipToPreviousButton iconSize={30} />
+          <PlayPauseButton iconSize={34} />
+          <SkipToNextButton iconSize={30} />
+        </View>
+
       </View>
       <View>
-      
+
       </View>
     </View>
   );
@@ -190,20 +203,20 @@ export const LyricsContainer = ({ lrc, currentTime }) => {
   );
 
   return (
-   <View>
-    <Lyric
-      style={{ height: 300, flex: 1}}
-      lrc={lrc}
-      currentTime={500}
-      lineHeight={16}
-      lineRenderer={lineRenderer}
-      autoScroll
-      autoScrollAfterUserScroll={500}
+    <View>
+      <Lyric
+        style={{ height: 300, flex: 1 }}
+        lrc={lrc}
+        currentTime={500}
+        lineHeight={16}
+        lineRenderer={lineRenderer}
+        autoScroll
+        autoScrollAfterUserScroll={500}
       // onCurrentLineChange={onCurrentLineChange}
-    />
-    <Text style={{color: 'black'}}>Hello world</Text>
-   </View>
-      
+      />
+      <Text style={{ color: 'black' }}>Hello world</Text>
+    </View>
+
 
   );
 }
@@ -273,9 +286,9 @@ const styles = StyleSheet.create({
   },
   trackControlContatiner: {
     flexDirection: 'row',
-		alignItems: 'center',
-		columnGap: 20,
-		marginRight: 16,
-		paddingLeft: 16,
+    alignItems: 'center',
+    columnGap: 20,
+    marginRight: 16,
+    paddingLeft: 16,
   }
 });

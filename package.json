@@ -11,6 +11,7 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.21.0",
     "@react-native-community/slider": "4.4.2",
+    "@react-native-firebase/storage": "^19.2.2",
     "@react-navigation/native": "^6.1.17",
     "@types/react": "~18.2.45",
     "clrc": "^3.1.4",

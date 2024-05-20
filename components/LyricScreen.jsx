@@ -18,13 +18,20 @@ export default function LyricScreen({lines, currentTime}) {
 
 const style = StyleSheet.create({
     highlight: {
-        color: 'blue',
+        color: 'yellow',
         textAlign: 'center',
-        width: Dimensions.get('screen').width
+        width: Dimensions.get('screen').width,
+        fontWeight: 'bold',
+        fontSize: 20,
+        marginTop: 10
     },
     normal: {
         color: 'white',
         textAlign: 'center',
-        width: Dimensions.get('screen').width
+        width: Dimensions.get('screen').width,
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: 10
+        
     }
 })

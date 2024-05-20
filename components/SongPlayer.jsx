@@ -63,7 +63,6 @@ const SongPlayer = () => {
         <Text style={[styles.songName, { color: theme.color }]}>
           {displayedTrack.title}
         </Text>
-        
         <Text style={[styles.songSinger]}>{displayedTrack.artist}</Text>
       </View>
       <View style={styles.trackControlContatiner}>

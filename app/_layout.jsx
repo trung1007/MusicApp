@@ -15,18 +15,18 @@ import { Linking } from "react-native";
 SplashScreen.preventAutoHideAsync();
 
 const RootLayout = () => {
-  Linking.getInitialURL().then((url) => {
-    console.log('initial url: ', url);
-    if (url === 'trackplayer://notification.click') {
-      navigation.navigate("(playlist)");
-  }
-  })
-  Linking.addEventListener('url', (event) => {
-    console.log('url: ', event.url);
-    if (event.url === 'musicapp:///notification.click') {
-      navigation.navigate("(playlist)");
-  }
-  })
+  // Linking.getInitialURL().then((url) => {
+  //   console.log('initial url: ', url);
+  //   if (url === 'trackplayer://notification.click') {
+  //     navigation.navigate("(playlist)");
+  // }
+  // })
+  // Linking.addEventListener('url', (event) => {
+  //   console.log('url: ', event.url);
+  //   if (event.url === 'musicapp:///notification.click') {
+  //     navigation.navigate("(playlist)");
+  // }
+  // })
   const handleTrackPlayerLoaded = useCallback(() => {
 		SplashScreen.hideAsync()
 	}, [])

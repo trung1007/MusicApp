@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import TrackPlayer, { Capability, RatingType, RepeatMode } from 'react-native-track-player'
+import TrackPlayer, { Capability, RatingType, RepeatMode, Event } from 'react-native-track-player'
 
 const setupPlayer = async () => {
 	await TrackPlayer.setupPlayer({
@@ -16,9 +16,14 @@ const setupPlayer = async () => {
 			Capability.Stop,
 		],
 	})
-
-	await TrackPlayer.setVolume(0.3) // not too loud
+	
+	await TrackPlayer.setVolume(0.3)
 	await TrackPlayer.setRepeatMode(RepeatMode.Queue)
+	TrackPlayer.addEventListener(Event.RemotePlay, () => TrackPlayer.play());
+	TrackPlayer.addEventListener(Event.RemoteNext, () => TrackPlayer.skipToNext());
+	TrackPlayer.addEventListener(Event.RemotePrevious, () => TrackPlayer.skipToPrevious());
+    TrackPlayer.addEventListener(Event.RemotePause, () => TrackPlayer.pause());
+	TrackPlayer.addEventListener(Event.RemoteStop, () => TrackPlayer.stop());
 }
 
 export const useSetupTrackPlayer = ({ onLoad }) => {

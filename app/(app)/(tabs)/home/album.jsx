@@ -46,7 +46,8 @@ const Album = ({albumId}) => {
         artwork: doc.data().image,
         artist: doc.data().singer,
         id: doc.data().id,
-        url:doc.data().music
+        url:doc.data().music,
+        // lyric: doc.data().lyric??"",
       });
     });
     setTracks(tracks);
