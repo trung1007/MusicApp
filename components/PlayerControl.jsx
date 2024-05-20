@@ -41,10 +41,10 @@ export const SkipToNextButton = ({ iconSize = 30 }) => {
 	)
 }
 
-export const SkipToPreviousButton = ({ iconSize = 30 }) => {
+export const SkipToPreviousButton = ({ iconSize = 30, color }) => {
 	return (
 		<TouchableOpacity activeOpacity={0.7} onPress={() => TrackPlayer.skipToPrevious()}>
-			<FontAwesome6 name={'backward'} size={iconSize} color="#000" />
+			<FontAwesome6 name={'backward'} size={iconSize} color={color} />
 		</TouchableOpacity>
 	)
 }

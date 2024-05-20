@@ -21,26 +21,28 @@ import { useNavigation } from "@react-navigation/native";
 import SongModal from "./SongModal";
 import { SongProvider } from "../context/SongContext";
 import themeContext from "../theme/themeContext";
-import { PlayPauseButton, SkipToNextButton, SkipToPreviousButton } from "./PlayerControl";
+import {
+  PlayPauseButton,
+  SkipToNextButton,
+  SkipToPreviousButton,
+} from "./PlayerControl";
 import { useActiveTrack } from "react-native-track-player";
 
 const SongPlayer = () => {
-  const theme = useContext(themeContext)
+  const theme = useContext(themeContext);
   const [modalVisible, setModalVisible] = useState(false);
 
   // const song = SongProvider.song;
   // console.log(song);
   const activeTrack = useActiveTrack();
   console.log("ActiveTrack: ", activeTrack);
-  const displayedTrack = activeTrack?? {
+  const displayedTrack = activeTrack ?? {
     title: "No active track",
     artist: "No active track",
     artwork: "https://via.placeholder.com/300",
   };
   console.log("DisplayedTrack: ", displayedTrack);
-  
 
-  
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
@@ -53,24 +55,29 @@ const SongPlayer = () => {
         { backgroundColor: theme.backgroundColor, borderColor: theme.color },
       ]}
     >
-      <Image
-        source={{
-          uri: displayedTrack.artwork,
-        }}
-        style={styles.songImage}
-      />
-      <View style={styles.songInfo}>
-        <Text style={[styles.songName, { color: theme.color }]}>
-          {displayedTrack.title}
-        </Text>
-        <Text style={[styles.songSinger]}>{displayedTrack.artist}</Text>
+      <View style={styles.song}>
+        <Image
+          source={{
+            uri: displayedTrack.artwork,
+          }}
+          style={styles.songImage}
+        />
+        <View style={styles.songInfo}>
+          <Text style={[styles.songName, { color: theme.color }]}>
+            {displayedTrack.title}
+          </Text>
+          <Text style={[styles.songSinger]}>{displayedTrack.artist}</Text>
+        </View>
       </View>
+
       <View style={styles.trackControlContatiner}>
-          <SkipToPreviousButton iconSize={22} />
-					<PlayPauseButton iconSize={24} />
-					<SkipToNextButton iconSize={22} />
-				</View>
-      {modalVisible && <SongModal item={displayedTrack} toggleModal={toggleModal} />}
+        <SkipToPreviousButton iconSize={22} color={theme.color} />
+        <PlayPauseButton iconSize={24} />
+        <SkipToNextButton iconSize={22} />
+      </View>
+      {modalVisible && (
+        <SongModal item={displayedTrack} toggleModal={toggleModal} />
+      )}
     </TouchableOpacity>
   );
 };
@@ -88,6 +95,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     padding: 5,
     gap: 10,
+  },
+  song: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap:10,
+    marginLeft:10
   },
   songImage: {
     height: 50,
@@ -108,12 +122,14 @@ const styles = StyleSheet.create({
     color: "gray",
   },
   trackControlContatiner: {
-    flexDirection: 'row',
-		alignItems: 'center',
-		columnGap: 20,
-		marginRight: 16,
-		paddingLeft: 16,
-  }
+    position: "absolute",
+    right: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    columnGap: 20,
+    marginRight: 16,
+    paddingLeft: 16,
+  },
 });
 
 export default SongPlayer;

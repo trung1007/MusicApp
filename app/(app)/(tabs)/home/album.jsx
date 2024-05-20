@@ -38,7 +38,6 @@ const Album = () => {
   const [select, setSelect] = useState(false)
 
   const fetchMusic = async () => {
-    console.log("Fetching music for album: ", albumID);
     const musicIdList = albumObj.musicList;
     const allMusicDocs = await getDocs(collection(FIREBASE_DB, "Music"));
     const tracks = [];
@@ -54,25 +53,7 @@ const Album = () => {
         })
       }
     });
-    console.log("Tracks: ", tracks);
-
-   
-    
-
-    
-    
-    // MusicData.forEach((doc) => {
-    //   tracks.push({
-    //     title: doc.data().name,
-    //     artwork: doc.data().image,
-    //     artist: doc.data().singer,
-    //     id: doc.data().id,
-    //     url:doc.data().music,
-    //     // lyric: doc.data().lyric??"",
-    //   });
-    // });
     setTracks(tracks);
-    // console.log(tracks);
   };
 
   useEffect(() => {

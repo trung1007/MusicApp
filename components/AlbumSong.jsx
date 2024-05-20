@@ -49,7 +49,7 @@ const AlbumSong = ({ item , onSelectSong}) => {
   // };
 
   return (
-    <View>
+    <View style={{backgroundColor:theme.backgroundColor}}>
       <TouchableOpacity style={styles.content} onPress={() => {
         console.log('pressed');
         onSelectSong(item)
