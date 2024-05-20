@@ -17,7 +17,7 @@ import { FIREBASE_AUTH, FIREBASE_DB } from "../../../../config/firebase";
 import { AuthProvider } from "../../../../context/AuthContext";
 
 import { signOut } from "@firebase/auth";
-
+import TrackPlayer from "react-native-track-player";
 const Profile = () => {
   const navigation = useNavigation();
   const theme = useContext(themeContext);
@@ -25,7 +25,9 @@ const Profile = () => {
 
   const handleSignOut = async () => {
     try {
+      
       await signOut(FIREBASE_AUTH), console.log("SignOut Successfully");
+      await TrackPlayer.reset();
       navigation.navigate("Login");
     } catch (error) {
       console.log(error);
