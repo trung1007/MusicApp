@@ -22,14 +22,14 @@ import { SongProvider } from "../../../../context/SongContext";
 import { useQueue } from "../../../../store/queue";
 
 
-const Album = ({albumId}) => {
+const Album = () => {
+  
   const route = useRoute();
+  const albumObj = route.params[0];
+  const albumID = albumObj.id;
   const navigation = useNavigation();
   const theme = useContext(themeContext)
-  const AlbumName = route.params[0].name;
-  // const id = route.params[0].albumId;
-  const id = AlbumName;
-  console.log("AlbumId: ", id, "AlbumName: ", AlbumName);
+
 
   const {activeQueueId, setActiveQueueId} = useQueue();
 
@@ -38,26 +38,47 @@ const Album = ({albumId}) => {
   const [select, setSelect] = useState(false)
 
   const fetchMusic = async () => {
+    console.log("Fetching music for album: ", albumID);
+    const musicIdList = albumObj.musicList;
+    const allMusicDocs = await getDocs(collection(FIREBASE_DB, "Music"));
     const tracks = [];
-    const MusicData = await getDocs(collection(FIREBASE_DB, id));
-    MusicData.forEach((doc) => {
-      tracks.push({
-        title: doc.data().name,
-        artwork: doc.data().image,
-        artist: doc.data().singer,
-        id: doc.data().id,
-        url:doc.data().music,
-        // lyric: doc.data().lyric??"",
-      });
+    allMusicDocs.forEach((doc) => {
+      const musicID = doc.id;
+      if (musicIdList.includes(musicID)) {
+        tracks.push({
+          title: doc.data().title,
+          artist: doc.data().artist,
+          artwork: doc.data().artwork,
+          id: musicID,
+          url: doc.data().url,
+        })
+      }
     });
+    console.log("Tracks: ", tracks);
+
+   
+    
+
+    
+    
+    // MusicData.forEach((doc) => {
+    //   tracks.push({
+    //     title: doc.data().name,
+    //     artwork: doc.data().image,
+    //     artist: doc.data().singer,
+    //     id: doc.data().id,
+    //     url:doc.data().music,
+    //     // lyric: doc.data().lyric??"",
+    //   });
+    // });
     setTracks(tracks);
-    console.log(tracks);
+    // console.log(tracks);
   };
 
   useEffect(() => {
     fetchMusic();
     setSelect(false)
-    // console.log();
+    // console.log("");
   }, []);
   const [currentSong, setCurrentSong] = useState({})
   const handleSelectSong = async (selectedTrack) => {
