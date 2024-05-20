@@ -78,17 +78,11 @@ const Album = () => {
   useEffect(() => {
     fetchMusic();
     setSelect(false)
-    // console.log("");
   }, []);
   const [currentSong, setCurrentSong] = useState({})
   const handleSelectSong = async (selectedTrack) => {
-    console.log("Selected track: ", selectedTrack);
     const trackIndex = tracks.findIndex((item) => item.id === selectedTrack.id);
-
     const isChangingAlbum = activeQueueId === null || (selectedTrack.id !== activeQueueId);
-
-    // console.log('Track index: ', trackIndex);
-
 
     if (isChangingAlbum) {
       const beforeTracks = tracks.slice(0, trackIndex);
@@ -98,9 +92,7 @@ const Album = () => {
       await TrackPlayer.add(afterTracks);
 
       await TrackPlayer.play();
-      // setActiveQueueId(id);
     } else {
-      console.log("Next button pressed")
       const nextTrackIndex =
 				trackIndex - queueOffset.current < 0
 					? tracks.length + trackIndex - queueOffset.current
@@ -109,26 +101,6 @@ const Album = () => {
 			await TrackPlayer.skip(nextTrackIndex)
 			TrackPlayer.play()
     }
-
-    // const track = {
-    //   id: song.id,
-    //   url: song.music,
-    //   title: song.name,
-    //   artist: song.singer,
-    //   artwork: song.image,
-    // };
-    // // (SongProvider.song = track), (SongProvider.select = true);
-    // // SongProvider.song = track;
-    // // SongProvider.select = true;
-    // // toggleModal();
-    
-    // await TrackPlayer.reset();
-    // await TrackPlayer.add(track);
-    // await TrackPlayer.play();
-   
-    // setSelectedSong(song);
-    
-    // setSelect(true);
 
   };
 

@@ -20,6 +20,7 @@ import { FIREBASE_DB } from "../../../config/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import SearchSong from "../../../components/SearchSong";
 import filter from "lodash.filter";
+import TrackPlayer from "react-native-track-player";
 
 const Search = () => {
   const theme = useContext(themeContext);
@@ -38,10 +39,12 @@ const Search = () => {
     const MusicList = await getDocs(collection(FIREBASE_DB, "Music"));
     MusicList.forEach((doc) => {
       musicTmp.push({
-        image: doc.data().img,
-        singer: doc.data().singer,
-        name: doc.data().title,
-        lyric: doc.data().uri,
+        id: doc.id,
+        artwork: doc.data().artwork,
+        artist: doc.data().artist,
+        title: doc.data().title,
+        url: doc.data().url,
+        // lyric: doc.data().uri,
       });
     });
     setMusicList(musicTmp);
@@ -57,14 +60,25 @@ const Search = () => {
     setMusicList(filteredData);
   };
 
-  const contains = ({ name, singer }, query) => {
-    const nameTmp = name.toLowerCase();
-    const singerTmp = singer.toLowerCase();
+  const contains = ({title, artist }, query) => {
+    const nameTmp = title.toLowerCase();
+    const singerTmp = artist.toLowerCase();
     if (nameTmp.includes(query) || singerTmp.includes(query)) {
       return true;
     }
     return false;
   };
+
+  const handlePressSong = async (track) => {
+    await TrackPlayer.reset();
+    const trackIndex = fullData.indexOf(track);
+    const previousTracks = fullData.slice(0, trackIndex);
+    const nextTracks = fullData.slice(trackIndex + 1);
+    await TrackPlayer.add(track);
+    await TrackPlayer.add(nextTracks);
+    await TrackPlayer.add(previousTracks);
+    await TrackPlayer.play();
+  }
 
   useEffect(() => {
     fetchMusic();
@@ -92,7 +106,7 @@ const Search = () => {
         </Pressable>
         <FlatList
           data={musicList}
-          renderItem={({ item }) => <SearchSong item={item} />}
+          renderItem={({ item }) => <SearchSong onPress={() => handlePressSong(item)} item={item} />}
           showsHorizontalScrollIndicator={false}
           pagingEnabled={false}
         />

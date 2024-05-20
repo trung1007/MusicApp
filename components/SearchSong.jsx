@@ -14,15 +14,16 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const SearchSong = ({ item }) => {
+
+const SearchSong = ({ item, onPress }) => {
   const { width } = useWindowDimensions();
   const navigation = useNavigation();
   return (
-    <Pressable style={[styles.wrapper]}>
-      <Image source={{ uri: item.image }} style={[styles.image]} />
+    <Pressable style={[styles.wrapper]} onPress={onPress}>
+      <Image source={{ uri: item.artwork }} style={[styles.image]} />
       <View>
-      <Text>{item.name}</Text>
-      <Text>{item.singer}</Text>
+        <Text>{item.artist}</Text>
+        <Text>{item.title}</Text>
       </View>
       
     </Pressable>
