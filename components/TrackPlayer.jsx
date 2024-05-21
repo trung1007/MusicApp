@@ -184,9 +184,9 @@ function MusicPlayer() {
           </View>
         </View>
         <View style={styles.trackControlContatiner}>
-          <SkipToPreviousButton iconSize={30}/>
-          <PlayPauseButton iconSize={34} />
-          <SkipToNextButton iconSize={30} />
+          <SkipToPreviousButton iconSize={38}/>
+          <PlayPauseButton iconSize={50} />
+          <SkipToNextButton iconSize={38} />
         </View>
       </View>
       <View></View>
