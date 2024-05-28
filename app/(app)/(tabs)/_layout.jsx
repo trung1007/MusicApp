@@ -65,6 +65,15 @@ const TabLayout = () => {
           }}
         />
         <Tabs.Screen
+          name="library"
+          options={{
+            title: "Album",
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="albums" size={24} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
           name="profile"
           options={{
             title: "Cá nhân",

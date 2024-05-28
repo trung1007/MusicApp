@@ -23,6 +23,7 @@ import TrackPlayer, {
 } from "react-native-track-player";
 import Slider from "@react-native-community/slider";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import podcasts from "../assets/data";
 import { SongProvider } from "../context/SongContext";
 import { Lyric } from "react-native-lyric";
@@ -32,6 +33,8 @@ import {
   SkipToPreviousButton,
 } from "./PlayerControl";
 import LyricScreen from "./LyricScreen.jsx";
+import { FIREBASE_DB } from "../config/firebase";
+import { addDoc, collection, doc, getDocs } from "firebase/firestore";
 
 export const getLRC = async (lrcFile) => {
   try {
@@ -125,6 +128,13 @@ function MusicPlayer() {
   console.log(progress);
   console.log(activeTrack);
 
+  const [favorite, SetFavorite] = useState(false);
+  const SongRef = collection(FIREBASE_DB, "User");
+ 
+  const handleAddFavorite = () => {
+    SetFavorite(!favorite);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.mainContainer}>
@@ -183,13 +193,24 @@ function MusicPlayer() {
             </Text>
           </View>
         </View>
-        <View style={styles.trackControlContatiner}>
-          <SkipToPreviousButton iconSize={38}/>
-          <PlayPauseButton iconSize={50} />
-          <SkipToNextButton iconSize={38} />
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={styles.trackControlContatiner}>
+            <SkipToPreviousButton iconSize={38} />
+            <PlayPauseButton iconSize={50} />
+            <SkipToNextButton iconSize={38} />
+          </View>
+          <TouchableOpacity
+            style={{ position: "absolute", right: -100 }}
+            onPress={handleAddFavorite}
+          >
+            {favorite ? (
+              <AntDesign name="heart" size={24} color="red" />
+            ) : (
+              <AntDesign name="hearto" size={24} color="white" />
+            )}
+          </TouchableOpacity>
         </View>
       </View>
-      <View></View>
     </View>
   );
 }
@@ -203,7 +224,7 @@ export const LyricsContainer = ({ lrc, currentTime }) => {
   // console.log(lrc);
   const lineRenderer = useCallback(
     ({ lrcLine: { millisecond, content }, index, active }) => {
-      console.log(content, index, active);
+      // console.log(content, index, active);
       return (
         <Text style={{ textAlign: "center", color: active ? "black" : "red" }}>
           {content}
@@ -246,7 +267,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingBottom:40
+    paddingBottom: 40,
   },
   mainWrapper: {
     width: width,
