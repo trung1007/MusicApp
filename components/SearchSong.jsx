@@ -13,18 +13,23 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import themeContext from "../theme/themeContext";
 
 
 const SearchSong = ({ item, onPress }) => {
   const { width } = useWindowDimensions();
   const navigation = useNavigation();
+  const theme = useContext(themeContext)
+
   return (
     <Pressable style={[styles.wrapper]} onPress={onPress}>
-      <Image source={{ uri: item.artwork }} style={[styles.image]} />
-      <View>
-        <Text>{item.artist}</Text>
-        <Text>{item.title}</Text>
-      </View>
+      <Image source={{ uri: item.artwork }} style={styles.songImg} />
+        <View style={styles.songInfo}>
+          <Text style={[styles.songName, { color: theme.color }]}>
+            {item.title}
+          </Text>
+          <Text style={[styles.songSinger]}>{item.artist}</Text>
+        </View>
       
     </Pressable>
   );
@@ -41,9 +46,23 @@ const styles = StyleSheet.create({
     gap: 10,
   },
 
-  image: {
-    width: 50,
-    height: 50,
-    borderRadius: 10,
+  songImg: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+  },
+  songInfo: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  songName: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginTop: 5,
+  },
+  songSinger: {
+    fontSize: 14,
+    marginBottom: 10,
+    color: "gray",
   },
 });

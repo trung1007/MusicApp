@@ -61,8 +61,6 @@ const Search = () => {
   };
 
   const contains = ({title, artist }, query) => {
-    console.log(title);
-    console.log(artist);
     const nameTmp = title.toLowerCase();
     const singerTmp = artist.toLowerCase();
     if (nameTmp.includes(query) || singerTmp.includes(query)) {

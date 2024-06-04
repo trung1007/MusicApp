@@ -17,26 +17,36 @@ import { Feather } from "@expo/vector-icons";
 import React from "react";
 import { FIREBASE_DB } from "../../../../config/firebase";
 import { AuthProvider } from "../../../../context/AuthContext";
+import PlaylistSong from "../../../../components/PlaylistSong";
+import { useNavigation } from "@react-navigation/native";
 
 const ModalAddPlaylist = ({ toggleModal }) => {
   const theme = useContext(themeContext);
 
-  const [newPlaylist, setNewPlaylist] = useState("")
+  const [newPlaylist, setNewPlaylist] = useState("");
+  const navigation = useNavigation();
 
   const closeModal = () => {
     toggleModal();
   };
   const user = AuthProvider.user;
-  const UserId = user.id
-  const UserPlaylistCollection = collection(FIREBASE_DB, 'User',UserId,'UserAlbum')
+  const UserId = user.id;
+  const UserPlaylistCollection = collection(
+    FIREBASE_DB,
+    "User",
+    UserId,
+    "UserAlbum"
+  );
 
-  const addPlaylist = async ()=>{
-    await addDoc(UserPlaylistCollection, {albumName: newPlaylist})
-  }
-
+  const addPlaylist = async () => {
+    if (newPlaylist != "") {
+      await addDoc(UserPlaylistCollection, { albumName: newPlaylist });
+    }
+    navigation.navigate("SongPlaylist", {newPlaylist});
+  };
 
   return (
-    <Modal
+    <Modal animationType="slide"
       style={[styles.modal_wrapper, { backgroundColor: theme.backgroundColor }]}
     >
       <View style={styles.modal_container}>
@@ -45,18 +55,17 @@ const ModalAddPlaylist = ({ toggleModal }) => {
             <Feather name="x" size={24} color="gray" />
           </Pressable>
           <Text style={{ fontSize: 16, color: "gray" }}>Tên Playlist</Text>
-          <TextInput style={styles.modal_textInput}
-            onChangeText={((value)=>{
-              setNewPlaylist(value)
-            })}
-
+          <TextInput
+            style={styles.modal_textInput}
+            onChangeText={(value) => {
+              setNewPlaylist(value);
+            }}
           />
         </View>
         <View
           style={{
             justifyContent: "center",
             alignItems: "center",
-           
           }}
         >
           <TouchableOpacity
@@ -96,25 +105,33 @@ const Playlist = () => {
   };
 
   const user = AuthProvider.user;
+  const [allPlaylist, setAllPlaylist] = useState([]);
 
+  const getPlaylist = async () => {
+    const UserId = user.id;
+    const playlist_tmp = [];
 
-  const getPlaylist = async ()=>{
+    const UserPlaylist = await getDocs(
+      collection(FIREBASE_DB, "User", UserId, "UserAlbum")
+    );
 
-    const UserId = user.id
+    UserPlaylist.forEach((doc) => {
+      const PlaylistId = doc.id;
+      playlist_tmp.push({
+        PlaylistName: doc.data().albumName,
+        PlaylistList: doc.data().musicList,
+        id: PlaylistId,
+      });
+    });
+    setAllPlaylist(playlist_tmp);
+  };
 
-    const UserPlaylist = await(getDocs(collection(FIREBASE_DB, 'User',UserId,'UserAlbum')))
-
-
-    UserPlaylist.forEach((doc)=>{
-      console.log(doc.data());
-    })
-  
-  }
-
-  useEffect(()=>{
-    getPlaylist()
-  })
-
+  useEffect(() => {
+    if (allPlaylist.length === 0) {
+      getPlaylist();
+    }
+    console.log(allPlaylist);
+  }, [allPlaylist]);
 
   return (
     <SafeAreaView style={styles.wrapper}>
@@ -150,7 +167,13 @@ const Playlist = () => {
           <Text style={{ fontSize: 20 }}>Tạo playlist</Text>
         </Pressable>
         {modalPlaylist && <ModalAddPlaylist toggleModal={addPlaylist} />}
-        <View></View>
+        <View>
+          {allPlaylist.map((item) => {
+            return (
+              <PlaylistSong PlaylistName={item.PlaylistName} id={item.id} />
+            );
+          })}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -182,7 +205,7 @@ const styles = StyleSheet.create({
   modal_container: {
     padding: 10,
     flex: 1,
-    justifyContent:'space-between'
+    justifyContent: "space-between",
   },
   modal_textInput: {
     height: 40,
