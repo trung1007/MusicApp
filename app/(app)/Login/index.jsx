@@ -51,6 +51,7 @@ const Login = () => {
         if (FIREBASE_AUTH.currentUser.email === doc.data().email) {
           user.ava = doc.data().ava;
           user.name = doc.data().name;
+          user.id = doc.id;
         }
       });
       AuthProvider.user = user;

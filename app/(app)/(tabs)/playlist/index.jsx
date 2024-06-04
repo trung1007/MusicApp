@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import {
   SafeAreaView,
@@ -15,13 +15,26 @@ import { getDocs, collection, addDoc } from "firebase/firestore";
 import themeContext from "../../../../theme/themeContext";
 import { Feather } from "@expo/vector-icons";
 import React from "react";
+import { FIREBASE_DB } from "../../../../config/firebase";
+import { AuthProvider } from "../../../../context/AuthContext";
 
 const ModalAddPlaylist = ({ toggleModal }) => {
   const theme = useContext(themeContext);
 
+  const [newPlaylist, setNewPlaylist] = useState("")
+
   const closeModal = () => {
     toggleModal();
   };
+  const user = AuthProvider.user;
+  const UserId = user.id
+  const UserPlaylistCollection = collection(FIREBASE_DB, 'User',UserId,'UserAlbum')
+
+  const addPlaylist = async ()=>{
+    await addDoc(UserPlaylistCollection, {albumName: newPlaylist})
+  }
+
+
   return (
     <Modal
       style={[styles.modal_wrapper, { backgroundColor: theme.backgroundColor }]}
@@ -32,7 +45,12 @@ const ModalAddPlaylist = ({ toggleModal }) => {
             <Feather name="x" size={24} color="gray" />
           </Pressable>
           <Text style={{ fontSize: 16, color: "gray" }}>Tên Playlist</Text>
-          <TextInput style={styles.modal_textInput} />
+          <TextInput style={styles.modal_textInput}
+            onChangeText={((value)=>{
+              setNewPlaylist(value)
+            })}
+
+          />
         </View>
         <View
           style={{
@@ -50,6 +68,7 @@ const ModalAddPlaylist = ({ toggleModal }) => {
               justifyContent: "center",
               borderRadius: 40,
             }}
+            onPress={addPlaylist}
           >
             <Text
               style={{
@@ -75,6 +94,27 @@ const Playlist = () => {
   const addPlaylist = () => {
     setModalPlaylist(!modalPlaylist);
   };
+
+  const user = AuthProvider.user;
+
+
+  const getPlaylist = async ()=>{
+
+    const UserId = user.id
+
+    const UserPlaylist = await(getDocs(collection(FIREBASE_DB, 'User',UserId,'UserAlbum')))
+
+
+    UserPlaylist.forEach((doc)=>{
+      console.log(doc.data());
+    })
+  
+  }
+
+  useEffect(()=>{
+    getPlaylist()
+  })
+
 
   return (
     <SafeAreaView style={styles.wrapper}>
