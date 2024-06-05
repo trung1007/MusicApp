@@ -21,9 +21,12 @@ import { FIREBASE_DB } from "../../../../config/firebase";
 import { getDocs, addDoc, collection } from "firebase/firestore";
 import SearchSong from "../../../../components/SearchSong";
 import filter from "lodash.filter";
+import AlbumSong from "../../../../components/AlbumSong";
+import AddSong from "../../../../components/AddSong";
+import TrackPlayer from "react-native-track-player";
+import { useQueue } from "../../../../store/queue";
 
-
-const ModalAddSongPlaylist = ({ toggleModal }) => {
+const ModalAddSongPlaylist = ({ toggleModal, PlayListId }) => {
   const closeModal = () => {
     toggleModal();
   };
@@ -112,7 +115,7 @@ const ModalAddSongPlaylist = ({ toggleModal }) => {
         </View>
         <FlatList
           data={musicList}
-          renderItem={({ item }) => <SearchSong item={item} />}
+          renderItem={({ item }) => <AddSong item={item} key={item.id} PlaylistId={PlayListId}/>}
           showsHorizontalScrollIndicator={false}
           pagingEnabled={false}
         />
@@ -144,13 +147,69 @@ const SongPlaylist = () => {
   const route = useRoute();
   const param = route.params;
   const PlaylistName = param.newPlaylist || param.PlaylistName;
+  const PlaylistList = param.PlaylistList;
   const user = AuthProvider.user;
   const [modalSongPlaylist, setModalSongPlaylist] = useState(false);
   const addSongPlaylist = () => {
     setModalSongPlaylist(!modalSongPlaylist);
   };
+  const {activeQueueId, setActiveQueueId} = useQueue();
 
-  useEffect(() => {});
+  useEffect(()=>{
+    console.log(route.params);
+  })
+
+  const [musicPlaylist, setMusicPlaylist] = useState([]);
+  const MusicCollection = collection(FIREBASE_DB, "Music");
+
+  const getMusic = async () => {
+    const Music = await getDocs(MusicCollection);
+    const music_tmp = [];
+    Music.forEach((doc) => {
+      if(PlaylistList.includes(doc.id)){
+        music_tmp.push({
+          artist: doc.data().artist,
+          artwork: doc.data().artwork,
+          title: doc.data().title,
+          url: doc.data().url,
+          id: doc.id,
+        });
+      }
+      
+    });
+    setMusicPlaylist(music_tmp)
+  };
+
+  const handleSelectSong = async (selectedTrack) => {
+    const trackIndex = musicPlaylist.findIndex((item) => item.id === selectedTrack.id);
+    const isChangingAlbum = activeQueueId === null || (selectedTrack.id !== activeQueueId);
+
+    if (isChangingAlbum) {
+      const beforeTracks = musicPlaylist.slice(0, trackIndex);
+      const afterTracks = musicPlaylist.slice(trackIndex + 1);
+      await TrackPlayer.reset();
+      await TrackPlayer.add(selectedTrack);
+      await TrackPlayer.add(afterTracks);
+
+      await TrackPlayer.play();
+    } else {
+      const nextTrackIndex =
+  			trackIndex - queueOffset.current < 0
+  				? tracks.length + trackIndex - queueOffset.current
+  				: trackIndex - queueOffset.current
+
+  		await TrackPlayer.skip(nextTrackIndex)
+  		TrackPlayer.play()
+    }
+
+  };
+
+  useEffect(() => {
+    if (musicPlaylist.length === 0) {
+      getMusic();
+    }
+    console.log(musicPlaylist);
+  }, [musicPlaylist]);
   return (
     <View style={[{ backgroundColor: theme.backgroundColor, flex: 1 }]}>
       <View style={{ padding: 10 }}>
@@ -194,6 +253,15 @@ const SongPlaylist = () => {
           <ModalAddSongPlaylist toggleModal={addSongPlaylist} />
         )}
       </View>
+      <ScrollView>
+        {musicPlaylist.map((item) => (
+          <AlbumSong
+            key={item.id}
+            item={item}
+            onSelectSong={handleSelectSong}
+          />
+        ))}
+      </ScrollView>
     </View>
   );
 };

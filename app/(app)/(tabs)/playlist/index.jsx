@@ -42,11 +42,12 @@ const ModalAddPlaylist = ({ toggleModal }) => {
     if (newPlaylist != "") {
       await addDoc(UserPlaylistCollection, { albumName: newPlaylist });
     }
-    navigation.navigate("SongPlaylist", {newPlaylist});
+    navigation.navigate("SongPlaylist", { newPlaylist });
   };
 
   return (
-    <Modal animationType="slide"
+    <Modal
+      animationType="slide"
       style={[styles.modal_wrapper, { backgroundColor: theme.backgroundColor }]}
     >
       <View style={styles.modal_container}>
@@ -105,15 +106,19 @@ const Playlist = () => {
   };
 
   const user = AuthProvider.user;
+  const UserId = user.id;
   const [allPlaylist, setAllPlaylist] = useState([]);
+  const UserPlaylistCollection = collection(
+    FIREBASE_DB,
+    "User",
+    UserId,
+    "UserAlbum"
+  );
 
   const getPlaylist = async () => {
-    const UserId = user.id;
     const playlist_tmp = [];
 
-    const UserPlaylist = await getDocs(
-      collection(FIREBASE_DB, "User", UserId, "UserAlbum")
-    );
+    const UserPlaylist = await getDocs(UserPlaylistCollection);
 
     UserPlaylist.forEach((doc) => {
       const PlaylistId = doc.id;
@@ -130,7 +135,7 @@ const Playlist = () => {
     if (allPlaylist.length === 0) {
       getPlaylist();
     }
-    console.log(allPlaylist);
+    // console.log(allPlaylist);
   }, [allPlaylist]);
 
   return (
@@ -170,7 +175,11 @@ const Playlist = () => {
         <View>
           {allPlaylist.map((item) => {
             return (
-              <PlaylistSong PlaylistName={item.PlaylistName} id={item.id} />
+              <PlaylistSong
+                PlaylistName={item.PlaylistName}
+                key={item.id}
+                PlaylistList={item.PlaylistList}
+              />
             );
           })}
         </View>

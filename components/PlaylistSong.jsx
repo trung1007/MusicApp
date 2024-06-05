@@ -1,18 +1,23 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { AuthProvider } from "../context/AuthContext";
 import themeContext from "../theme/themeContext";
 import { useNavigation } from "@react-navigation/native";
 
-const PlaylistSong = ({ PlaylistName, id }) => {
+const PlaylistSong = ({ PlaylistName, id, PlaylistList }) => {
   const theme = useContext(themeContext);
   const user = AuthProvider.user;
 const navigation = useNavigation()
 
+useEffect(()=>{
+  // console.log(PlaylistList);
+  console.log(id);
+},[])
+
   return (
     <TouchableOpacity style={styles.wrapper} onPress={()=>{
-        navigation.navigate('SongPlaylist',{PlaylistName})
+        navigation.navigate('SongPlaylist',{PlaylistName, PlaylistList, id})
     }}>
       <View
         style={{
