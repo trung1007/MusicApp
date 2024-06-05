@@ -148,6 +148,7 @@ const SongPlaylist = () => {
   const param = route.params;
   const PlaylistName = param.newPlaylist || param.PlaylistName;
   const PlaylistList = param.PlaylistList;
+  const PlayListID  = param.id
   const user = AuthProvider.user;
   const [modalSongPlaylist, setModalSongPlaylist] = useState(false);
   const addSongPlaylist = () => {
@@ -155,9 +156,9 @@ const SongPlaylist = () => {
   };
   const {activeQueueId, setActiveQueueId} = useQueue();
 
-  useEffect(()=>{
-    console.log(route.params);
-  })
+  // useEffect(()=>{
+  //   console.log(route.params);
+  // })
 
   const [musicPlaylist, setMusicPlaylist] = useState([]);
   const MusicCollection = collection(FIREBASE_DB, "Music");
@@ -208,7 +209,7 @@ const SongPlaylist = () => {
     if (musicPlaylist.length === 0) {
       getMusic();
     }
-    console.log(musicPlaylist);
+    // console.log(musicPlaylist);
   }, [musicPlaylist]);
   return (
     <View style={[{ backgroundColor: theme.backgroundColor, flex: 1 }]}>
@@ -250,7 +251,7 @@ const SongPlaylist = () => {
           </Text>
         </TouchableOpacity>
         {modalSongPlaylist && (
-          <ModalAddSongPlaylist toggleModal={addSongPlaylist} />
+          <ModalAddSongPlaylist toggleModal={addSongPlaylist} PlayListId={PlayListID} />
         )}
       </View>
       <ScrollView>

@@ -178,6 +178,7 @@ const Playlist = () => {
               <PlaylistSong
                 PlaylistName={item.PlaylistName}
                 key={item.id}
+                id={item.id}
                 PlaylistList={item.PlaylistList}
               />
             );

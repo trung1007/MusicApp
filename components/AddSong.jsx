@@ -17,7 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import themeContext from "../theme/themeContext";
 import { AntDesign } from "@expo/vector-icons";
 import { FIREBASE_DB } from "../config/firebase";
-import { addDoc, collection,doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
 import { AuthProvider } from "../context/AuthContext";
 
 const AddSong = ({ item, onPress, PlaylistId }) => {
@@ -34,14 +34,35 @@ const AddSong = ({ item, onPress, PlaylistId }) => {
     "UserAlbum"
   );
 
-  const addSongtoPlaylist = async (PlaylistId) => {
-    const currentDoc = doc(FIREBASE_DB, 'User', UserID, "UserAlbum", PlaylistId)
+  const addSongtoPlaylist = async () => {
+    const musicId = item.id;
+    const currentDoc = doc(
+      FIREBASE_DB,
+      "User",
+      UserID,
+      "UserAlbum",
+      PlaylistId
+    );
+    console.log("add Song");
+    console.log(musicId);
 
-    setCurrentSong(item.id);
-    if (currentSong != "") {
-    //   console.log(currentSong);
+    try {
+      // Get the current document data
+      const docSnapshot = await getDoc(currentDoc);
+      const currentData = docSnapshot.data();
+  
+      // Update the musicList array
+      const updatedMusicList = [...(currentData.musicList || []), musicId];
+  
+      // Update the document with the new musicList
+      await updateDoc(currentDoc, {
+        musicList: updatedMusicList,
+      });
+  
+      console.log("Song added to the playlist!");
+    } catch (error) {
+      console.error("Error adding song to the playlist:", error);
     }
-    // await addDoc(UserPlaylistCollection, {musicList: currentSong})
   };
 
   return (

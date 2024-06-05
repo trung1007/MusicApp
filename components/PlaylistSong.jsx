@@ -10,10 +10,10 @@ const PlaylistSong = ({ PlaylistName, id, PlaylistList }) => {
   const user = AuthProvider.user;
 const navigation = useNavigation()
 
-useEffect(()=>{
-  // console.log(PlaylistList);
-  console.log(id);
-},[])
+// useEffect(()=>{
+//   // console.log(PlaylistList);
+//   console.log(id);
+// },[])
 
   return (
     <TouchableOpacity style={styles.wrapper} onPress={()=>{
