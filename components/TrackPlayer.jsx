@@ -37,86 +37,58 @@ import { FIREBASE_DB } from "../config/firebase";
 import { addDoc, collection, doc, getDocs } from "firebase/firestore";
 
 export const getLRC = async (lrcFile) => {
-  try {
-    // const reference = storage().ref(lrcFile);
-    // const url = await reference.getDownloadURL();
-    const response = await fetch(lrcFile);
-    const text = await response.text();
-    console.log(text);
-    const lrc = parse(text);
-    return lrc;
-  } catch (error) {
-    console.log(error);
-  }
+  
+    fetch(lrcFile)
+    .then((response) => response.text())
+    .then((data) => {
+      const lines = data.split("\n");
+
+      const lrc = [];
+
+      lines.forEach((line, index) => {
+        const trimmed = line.trim();
+        lrcLine = parse(trimmed);
+        lrcLine[0].lineNumber = index;
+        lrc.push(lrcLine[0]);
+      });
+      // console.log(lrc);
+      return lrc;
+
+    });
 };
+
+
+
 
 function MusicPlayer() {
   const activeTrack = useActiveTrack();
-  console.log(activeTrack);
+  // console.log(activeTrack);
+  const [lyricLines, setLyricLines] = useState([]);
 
-  const lrc = `[00:45.098]Xua tan bộn bề nơi anh
-[00:48.095]Bao ngày qua niềm thương nỗi nhớ
-[00:51.021]Bay theo bầu trời trong xanh
-[00:54.005]Lướt đôi hàng mi
-[00:57.013]Mong manh anh thẫn thờ
-[00:59.040]Muốn hôn nhẹ mái tóc
-[01:01.034]Bờ môi em anh mơ
-[01:04.053]Cầm tay anh dựa vai anh
-[01:07.021]Kề bên anh nơi này có anh
-[01:09.051]Gió mang câu tình ca
-[01:10.099]Ngàn ánh sao vụt qua
-[01:12.010]Nhẹ ôm lấy em
-[01:15.008]Cầm tay anh dựa vai anh
-[01:17.070]Kề bên anh nơi này có anh
-[01:19.092]Khép đôi mi thật lâu
-[01:21.037]Nguyện mãi bên cạnh nhau
-[01:22.051]Yêu say đắm như ngày đầu
-[01:25.023]Mùa xuân đến bình yên
-[01:28.042]Cho anh những giấc mơ
-[01:30.043]Hạ lưu giữ ngày mưa
-[01:33.068]Ngọt ngào nên thơ
-[01:35.065]Mùa thu lá vàng rơi
-[01:38.077]Đông sang anh nhớ em
-[01:40.083]Tình yêu bé nhỏ xin
-[01:44.000]Dành tặng riêng em
-[01:57.029]Còn đó tiếng nói ấy
-[01:58.036]Bên tai vấn vương bao ngày qua
-[02:00.010]Ánh mắt bối rối
-[02:00.091]Nhớ thương bao ngày qua
-[02:02.077]Yêu em anh thẫn thờ
-[02:03.081]Con tim bâng khuâng đâu có ngờ
-[02:05.006]Chẳng bao giờ phải mong chờ
-[02:06.048]Đợi ai trong chiều hoàng hôn mờ
-[02:07.084]Đắm chìm hoà vào vần thơ
-[02:09.015]Ngắm nhìn khờ dại mộng mơ
-[02:10.040]Đừng bước vội vàng rồi làm ngơ
-[02:11.066]Lạnh lùng đó làm bộ dạng thờ ơ
-[02:13.000]Nhìn anh đi em nha
-[02:13.090]Hướng nụ cười cho riêng anh nha
-[02:15.010]Đơn giản là yêu
-[02:15.082]Con tim anh lên tiếng thôi
-[02:17.065]Cầm tay anh dựa vai anh
-[02:20.033]Kề bên anh nơi này có anh
-[02:22.057]Gió mang câu tình ca
-[02:24.001]Ngàn ánh sao vụt qua
-[02:25.009]Nhẹ ôm lấy em
-[02:28.004]Cầm tay anh dựa vai anh
-[02:30.066]Kề bên anh nơi này có anh
-[02:32.095]Khép đôi mi thật lâu
-[02:34.046]Nguyện mãi bên cạnh nhau
-[02:35.057]Yêu say đắm như ngày đầu
-[02:38.027]Mùa xuân đến bình yên
-[02:41.042]Cho anh những giấc mơ
-[02:43.036]Hạ lưu giữ ngày mưa
-[02:46.066]Ngọt ngào nên thơ
-[02:48.079]Mùa thu lá vàng rơi
-[02:51.091]Đông sang anh nhớ em
-[02:53.084]Tình yêu bé nhỏ xin
-[02:57.002]Dành tặng riêng em
-[03:02.059]Nhớ thương em`;
-  const lyricLink =
-    "https://firebasestorage.googleapis.com/v0/b/music-app-2c0fc.appspot.com/o/Music%2FHoa%20N%E1%BB%9F%20Kh%C3%B4ng%20M%C3%A0u%2Fhoanokhongmau.txt?alt=media&token=290611d3-9fe7-4da8-a8a1-1979bb80fcd9";
-  const lines = getLRC() ?? [];
+  useEffect(() => {
+    const lyricLink =
+    "https://firebasestorage.googleapis.com/v0/b/music-app-2c0fc.appspot.com/o/Music%2FHoa%20N%E1%BB%9F%20Kh%C3%B4ng%20M%C3%A0u%2Ftest.txt?alt=media&token=680dad3d-2616-41b8-8de1-b8ec587851b0";
+    fetch(lyricLink)
+    .then((response) => response.text())
+    .then((data) => {
+      const lines = data.split("\n");
+      const lrc = [];
+
+      lines.forEach((line, index) => {
+        const trimmed = line.trim();
+        const lrcLine = parse(trimmed);
+        lrcLine[0].lineNumber = index;
+        lrc.push(lrcLine[0]);
+      });
+      // console.log(lrc);
+      setLyricLines(lrc);  
+    })
+  }, []);
+
+  
+  //   const lines = getLRC(lyricLink) ?? [];
+    // console.log("lines parsed: ", lr);
+
   const currentSong = useActiveTrack() ?? {
     title: "No song",
     artist: "No artist",
@@ -125,8 +97,8 @@ function MusicPlayer() {
 
   const playBackState = usePlaybackState();
   const progress = useProgress();
-  console.log(progress);
-  console.log(activeTrack);
+  // console.log(progress);
+  // console.log(activeTrack);
 
   const [favorite, SetFavorite] = useState(false);
   const SongRef = collection(FIREBASE_DB, "User");
@@ -164,7 +136,7 @@ function MusicPlayer() {
             </View>
           </View>
           <LyricScreen
-            lines={parse(lrc)}
+            lines={lyricLines}
             currentTime={progress.position * 1000}
           />
         </ScrollView>
@@ -235,7 +207,7 @@ export const LyricsContainer = ({ lrc, currentTime }) => {
   );
   const onCurrentLineChange = useCallback(
     ({ lrcLine: { millisecond, content }, index }) =>
-      console.log(index, millisecond, content),
+      // console.log(index, millisecond, content),
     []
   );
 

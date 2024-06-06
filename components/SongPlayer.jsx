@@ -35,13 +35,13 @@ const SongPlayer = () => {
   // const song = SongProvider.song;
   // console.log(song);
   const activeTrack = useActiveTrack();
-  console.log("ActiveTrack: ", activeTrack);
+  // console.log("ActiveTrack: ", activeTrack);
   const displayedTrack = activeTrack ?? {
     title: "No active track",
     artist: "No active track",
     artwork: "https://via.placeholder.com/300",
   };
-  console.log("DisplayedTrack: ", displayedTrack);
+  // console.log("DisplayedTrack: ", displayedTrack);
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
