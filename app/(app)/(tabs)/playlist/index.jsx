@@ -40,9 +40,16 @@ const ModalAddPlaylist = ({ toggleModal }) => {
 
   const addPlaylist = async () => {
     if (newPlaylist != "") {
-      await addDoc(UserPlaylistCollection, { albumName: newPlaylist });
+      
+      addDoc(UserPlaylistCollection, { albumName: newPlaylist, musicList: [] })
+      .then((docRef) => {
+        navigation.navigate("SongPlaylist", { newPlaylist, PlaylistList: [], id: docRef.id });
+      })
+      .catch((error) => {
+        console.error("Error adding playlist: ", error);
+      });
     }
-    navigation.navigate("SongPlaylist", { newPlaylist });
+    
   };
 
   return (

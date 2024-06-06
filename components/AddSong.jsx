@@ -20,22 +20,15 @@ import { FIREBASE_DB } from "../config/firebase";
 import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
 import { AuthProvider } from "../context/AuthContext";
 
-const AddSong = ({ item, onPress, PlaylistId }) => {
-  const { width } = useWindowDimensions();
-  const navigation = useNavigation();
+const AddSong = ({ item, onPress, PlaylistId, changeCurrentPlaylistSongsID, currentPlaylistSongsID }) => {
   const theme = useContext(themeContext);
-  const [currentSong, setCurrentSong] = useState("");
   const user = AuthProvider.user;
   const UserID = user.id;
-  const UserPlaylistCollection = collection(
-    FIREBASE_DB,
-    "User",
-    UserID,
-    "UserAlbum"
-  );
+
 
   const addSongtoPlaylist = async () => {
     const musicId = item.id;
+    console.log("Start query firebase");
     const currentDoc = doc(
       FIREBASE_DB,
       "User",
@@ -52,7 +45,7 @@ const AddSong = ({ item, onPress, PlaylistId }) => {
       const currentData = docSnapshot.data();
   
       // Update the musicList array
-      const updatedMusicList = [...(currentData.musicList || []), musicId];
+      const updatedMusicList = [...currentData.musicList, musicId];
   
       // Update the document with the new musicList
       await updateDoc(currentDoc, {
@@ -60,6 +53,7 @@ const AddSong = ({ item, onPress, PlaylistId }) => {
       });
   
       console.log("Song added to the playlist!");
+      changeCurrentPlaylistSongsID([...updatedMusicList]);
     } catch (error) {
       console.error("Error adding song to the playlist:", error);
     }
@@ -73,7 +67,7 @@ const AddSong = ({ item, onPress, PlaylistId }) => {
         justifyContent: "space-between",
       }}
     >
-      <Pressable style={[styles.wrapper]} onPress={onPress}>
+      <Pressable style={[styles.wrapper]}>
         <Image source={{ uri: item.artwork }} style={styles.songImg} />
         <View style={styles.songInfo}>
           <Text style={[styles.songName, { color: theme.color }]}>

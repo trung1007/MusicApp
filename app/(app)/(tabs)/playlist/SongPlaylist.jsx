@@ -25,9 +25,16 @@ import AlbumSong from "../../../../components/AlbumSong";
 import AddSong from "../../../../components/AddSong";
 import TrackPlayer from "react-native-track-player";
 import { useQueue } from "../../../../store/queue";
+import { firebase } from "@react-native-firebase/storage";
 
-const ModalAddSongPlaylist = ({ toggleModal, PlayListId }) => {
+const ModalAddSongPlaylist = ({ toggleModal, PlayListId, playListSongsID, changePlayListSongsID }) => {
+
+  const [currentPlaylistSongsID, setCurrentPlaylistSongsID] = useState([...playListSongsID]);
+  const changeCurrentPlaylistSongsID = (newIDList) => {
+    setCurrentPlaylistSongsID(newIDList);
+  }
   const closeModal = () => {
+    changePlayListSongsID([...currentPlaylistSongsID]);
     toggleModal();
   };
   const [musicList, setMusicList] = useState([]);
@@ -115,9 +122,10 @@ const ModalAddSongPlaylist = ({ toggleModal, PlayListId }) => {
         </View>
         <FlatList
           data={musicList}
-          renderItem={({ item }) => <AddSong item={item} key={item.id} PlaylistId={PlayListId}/>}
+          renderItem={({ item }) => <AddSong item={item} PlaylistId={PlayListId} changeCurrentPlaylistSongsID={changeCurrentPlaylistSongsID} currentPlaylistSongsID={currentPlaylistSongsID} />}
           showsHorizontalScrollIndicator={false}
           pagingEnabled={false}
+          keyExtractor={(item) => item.id}
         />
       </View>
     </Modal>
@@ -147,14 +155,21 @@ const SongPlaylist = () => {
   const route = useRoute();
   const param = route.params;
   const PlaylistName = param.newPlaylist || param.PlaylistName;
-  const PlaylistList = param.PlaylistList;
-  const PlayListID  = param.id
+  // const PlaylistList = param.PlaylistList;
+
+  const [playlistSongsID, setPlaylistSongsID] = useState([...param.PlaylistList]);
+
+  const changePlaylistSongsID = (newPlaylistSongs) => {
+    setPlaylistSongsID(newPlaylistSongs);
+  }
+
+  const PlayListID = param.id
   const user = AuthProvider.user;
   const [modalSongPlaylist, setModalSongPlaylist] = useState(false);
   const addSongPlaylist = () => {
     setModalSongPlaylist(!modalSongPlaylist);
   };
-  const {activeQueueId, setActiveQueueId} = useQueue();
+  const { activeQueueId, setActiveQueueId } = useQueue();
 
   // useEffect(()=>{
   //   console.log(route.params);
@@ -167,7 +182,7 @@ const SongPlaylist = () => {
     const Music = await getDocs(MusicCollection);
     const music_tmp = [];
     Music.forEach((doc) => {
-      if(PlaylistList.includes(doc.id)){
+      if (playlistSongsID.includes(doc.id)) {
         music_tmp.push({
           artist: doc.data().artist,
           artwork: doc.data().artwork,
@@ -176,7 +191,7 @@ const SongPlaylist = () => {
           id: doc.id,
         });
       }
-      
+
     });
     setMusicPlaylist(music_tmp)
   };
@@ -195,22 +210,23 @@ const SongPlaylist = () => {
       await TrackPlayer.play();
     } else {
       const nextTrackIndex =
-  			trackIndex - queueOffset.current < 0
-  				? tracks.length + trackIndex - queueOffset.current
-  				: trackIndex - queueOffset.current
+        trackIndex - queueOffset.current < 0
+          ? tracks.length + trackIndex - queueOffset.current
+          : trackIndex - queueOffset.current
 
-  		await TrackPlayer.skip(nextTrackIndex)
-  		TrackPlayer.play()
+      await TrackPlayer.skip(nextTrackIndex)
+      TrackPlayer.play()
     }
 
   };
 
   useEffect(() => {
-    if (musicPlaylist.length === 0) {
-      getMusic();
-    }
+    // if (musicPlaylist.length === 0) {
+
+    // }
+    getMusic();
     // console.log(musicPlaylist);
-  }, [musicPlaylist]);
+  }, [playlistSongsID.length]);
   return (
     <View style={[{ backgroundColor: theme.backgroundColor, flex: 1 }]}>
       <View style={{ padding: 10 }}>
@@ -251,10 +267,16 @@ const SongPlaylist = () => {
           </Text>
         </TouchableOpacity>
         {modalSongPlaylist && (
-          <ModalAddSongPlaylist toggleModal={addSongPlaylist} PlayListId={PlayListID} />
+          <ModalAddSongPlaylist toggleModal={addSongPlaylist} PlayListId={PlayListID} changePlayListSongsID={changePlaylistSongsID} playListSongsID={playlistSongsID} />
         )}
       </View>
-      <ScrollView>
+      <View style={{ flex: 1 }}>
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          data={musicPlaylist}
+          renderItem={({ item }) => <AlbumSong item={item} onSelectSong={handleSelectSong} />}
+          keyExtractor={(item) => item.id} />
+        {/* <ScrollView>
         {musicPlaylist.map((item) => (
           <AlbumSong
             key={item.id}
@@ -262,7 +284,9 @@ const SongPlaylist = () => {
             onSelectSong={handleSelectSong}
           />
         ))}
-      </ScrollView>
+      </ScrollView> */}
+      </View>
+
     </View>
   );
 };
