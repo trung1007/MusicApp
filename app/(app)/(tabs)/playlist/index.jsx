@@ -122,6 +122,9 @@ const Playlist = () => {
     "UserAlbum"
   );
 
+  const removePlaylist = (playlistId) => {
+    setAllPlaylist(allPlaylist => allPlaylist.filter(playlist => playlist.id !== playlistId));
+  }
   const getPlaylist = async () => {
     const playlist_tmp = [];
 
@@ -187,6 +190,7 @@ const Playlist = () => {
                 key={item.id}
                 id={item.id}
                 PlaylistList={item.PlaylistList}
+                removePlaylistFromUI = {removePlaylist}
               />
             );
           })}

@@ -9,6 +9,7 @@ import {
   ScrollView,
   TextInput,
   FlatList,
+  Button,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
@@ -26,6 +27,8 @@ import AddSong from "../../../../components/AddSong";
 import TrackPlayer from "react-native-track-player";
 import { useQueue } from "../../../../store/queue";
 import { firebase } from "@react-native-firebase/storage";
+import CustomAlbumSong from "../../../../components/CustomAlbumSong";
+
 
 const ModalAddSongPlaylist = ({ toggleModal, PlayListId, playListSongsID, changePlayListSongsID }) => {
 
@@ -42,6 +45,9 @@ const ModalAddSongPlaylist = ({ toggleModal, PlayListId, playListSongsID, change
   const [searchQuery, setSearchQuery] = useState("");
   const [fullData, setFullData] = useState([]);
 
+  const removeSongFromMusicList = (songID) => {
+    setMusicList(musicList => musicList.filter(song => song.id !== songID));
+  }
   const handlePress = () => {
     textInputRef.current.focus();
   };
@@ -50,14 +56,16 @@ const ModalAddSongPlaylist = ({ toggleModal, PlayListId, playListSongsID, change
 
     const MusicList = await getDocs(collection(FIREBASE_DB, "Music"));
     MusicList.forEach((doc) => {
-      musicTmp.push({
-        id: doc.id,
-        artwork: doc.data().artwork,
-        artist: doc.data().artist,
-        title: doc.data().title,
-        url: doc.data().url,
-        // lyric: doc.data().uri,
-      });
+      if (!currentPlaylistSongsID.includes(doc.id)) {
+        musicTmp.push({
+          id: doc.id,
+          artwork: doc.data().artwork,
+          artist: doc.data().artist,
+          title: doc.data().title,
+          url: doc.data().url,
+          // lyric: doc.data().uri,
+        });
+      }
     });
     setMusicList(musicTmp);
     setFullData(musicTmp);
@@ -122,7 +130,7 @@ const ModalAddSongPlaylist = ({ toggleModal, PlayListId, playListSongsID, change
         </View>
         <FlatList
           data={musicList}
-          renderItem={({ item }) => <AddSong item={item} PlaylistId={PlayListId} changeCurrentPlaylistSongsID={changeCurrentPlaylistSongsID} currentPlaylistSongsID={currentPlaylistSongsID} />}
+          renderItem={({ item }) => <AddSong item={item} PlaylistId={PlayListId} changeCurrentPlaylistSongsID={changeCurrentPlaylistSongsID} currentPlaylistSongsID={currentPlaylistSongsID} removeFromList={removeSongFromMusicList}/>}
           showsHorizontalScrollIndicator={false}
           pagingEnabled={false}
           keyExtractor={(item) => item.id}
@@ -163,7 +171,7 @@ const SongPlaylist = () => {
     setPlaylistSongsID(newPlaylistSongs);
   }
 
-  const PlayListID = param.id
+  const playlistID = param.id
   const user = AuthProvider.user;
   const [modalSongPlaylist, setModalSongPlaylist] = useState(false);
   const addSongPlaylist = () => {
@@ -226,7 +234,7 @@ const SongPlaylist = () => {
     // }
     getMusic();
     // console.log(musicPlaylist);
-  }, [playlistSongsID.length]);
+  }, [JSON.stringify(playlistSongsID)]);
   return (
     <View style={[{ backgroundColor: theme.backgroundColor, flex: 1 }]}>
       <View style={{ padding: 10 }}>
@@ -267,14 +275,18 @@ const SongPlaylist = () => {
           </Text>
         </TouchableOpacity>
         {modalSongPlaylist && (
-          <ModalAddSongPlaylist toggleModal={addSongPlaylist} PlayListId={PlayListID} changePlayListSongsID={changePlaylistSongsID} playListSongsID={playlistSongsID} />
+          <ModalAddSongPlaylist toggleModal={addSongPlaylist} PlayListId={playlistID} changePlayListSongsID={changePlaylistSongsID} playListSongsID={playlistSongsID} />
         )}
       </View>
       <View style={{ flex: 1 }}>
         <FlatList
           showsVerticalScrollIndicator={false}
           data={musicPlaylist}
-          renderItem={({ item }) => <AlbumSong item={item} onSelectSong={handleSelectSong} />}
+          renderItem={({ item }) => {
+            return (
+              <CustomAlbumSong item={item} onSelectSong={handleSelectSong}  changePlaylistSongsID={changePlaylistSongsID} playlistId={playlistID}/>
+            )
+          }}
           keyExtractor={(item) => item.id} />
         {/* <ScrollView>
         {musicPlaylist.map((item) => (

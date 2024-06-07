@@ -8,7 +8,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import {deleteDoc,doc, } from 'firebase/firestore'
 import { FIREBASE_DB } from "../config/firebase";
 
-const PlaylistSong = ({ PlaylistName, id, PlaylistList }) => {
+const PlaylistSong = ({ PlaylistName, id, PlaylistList, removePlaylistFromUI }) => {
   const theme = useContext(themeContext);
   const user = AuthProvider.user;
   const navigation = useNavigation();
@@ -21,7 +21,8 @@ const PlaylistSong = ({ PlaylistName, id, PlaylistList }) => {
 
   const removePlaylist = async()=>{
     const currentPlaylistDoc = doc(FIREBASE_DB, 'User',UserID, 'UserAlbum', id )
-    await deleteDoc(currentPlaylistDoc)
+    await deleteDoc(currentPlaylistDoc);
+    removePlaylistFromUI(id);
   }
 
   return (

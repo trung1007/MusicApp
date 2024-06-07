@@ -20,14 +20,16 @@ import { FIREBASE_DB } from "../config/firebase";
 import { addDoc, collection, doc, updateDoc, getDoc } from "firebase/firestore";
 import { AuthProvider } from "../context/AuthContext";
 
-const AddSong = ({ item, onPress, PlaylistId, changeCurrentPlaylistSongsID, currentPlaylistSongsID }) => {
+const AddSong = ({ item, onPress, PlaylistId, changeCurrentPlaylistSongsID, currentPlaylistSongsIDa, removeFromList }) => {
   const theme = useContext(themeContext);
   const user = AuthProvider.user;
   const UserID = user.id;
 
 
   const addSongtoPlaylist = async () => {
+
     const musicId = item.id;
+    removeFromList(musicId);
     console.log("Start query firebase");
     const currentDoc = doc(
       FIREBASE_DB,
@@ -57,6 +59,7 @@ const AddSong = ({ item, onPress, PlaylistId, changeCurrentPlaylistSongsID, curr
     } catch (error) {
       console.error("Error adding song to the playlist:", error);
     }
+    
   };
 
   return (
