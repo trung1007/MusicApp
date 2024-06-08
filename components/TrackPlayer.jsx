@@ -96,7 +96,7 @@ function MusicPlayer() {
     });
     }
     fetchLyric();
-  }, []);
+  }, [currentSong]);
 
   
   //   const lines = getLRC(lyricLink) ?? [];
