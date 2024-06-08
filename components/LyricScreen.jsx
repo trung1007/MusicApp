@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, FlatList, StyleSheet, Dimensions } from 'react-native'
 export default function LyricScreen({lines, currentTime}) {
-    console.log("line",lines);
+    // console.log("line",lines);
     // console.log("currentTime",currentTime);
   return (
     <FlatList 

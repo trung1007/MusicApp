@@ -14,7 +14,7 @@ export const useFetchMusic = () => {
 
     const AlbumList = await getDocs(collection(FIREBASE_DB, 'AlbumList'));
     AlbumList.forEach((doc) => {
-      console.log("Document: " ,doc.data());
+      // console.log("Document: " ,doc.data());
       albumTmp.push({
         id: doc.id,
         name: doc.data().name,

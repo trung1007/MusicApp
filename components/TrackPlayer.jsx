@@ -34,39 +34,80 @@ import {
 } from "./PlayerControl";
 import LyricScreen from "./LyricScreen.jsx";
 import { FIREBASE_DB } from "../config/firebase";
-import { addDoc, collection, doc, getDocs } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs } from "firebase/firestore";
 
 export const getLRC = async (lrcFile) => {
-  try {
-    // const reference = storage().ref(lrcFile);
-    // const url = await reference.getDownloadURL();
-    const response = await fetch(lrcFile);
-    const text = await response.text();
-    console.log(text);
-    const lrc = parse(text);
-    return lrc;
-  } catch (error) {
-    console.log(error);
-  }
+  
+    fetch(lrcFile)
+    .then((response) => response.text())
+    .then((data) => {
+      const lines = data.split("\n");
+
+      const lrc = [];
+
+      lines.forEach((line, index) => {
+        const trimmed = line.trim();
+        lrcLine = parse(trimmed);
+        lrcLine[0].lineNumber = index;
+        lrc.push(lrcLine[0]);
+      });
+      // console.log(lrc);
+      return lrc;
+
+    });
 };
+
+
+
 
 function MusicPlayer() {
   const activeTrack = useActiveTrack();
-  console.log(activeTrack);
+  // console.log(activeTrack);
+  const [lyricLines, setLyricLines] = useState([]);
 
-  const lyricLink =
-    "https://firebasestorage.googleapis.com/v0/b/music-app-2c0fc.appspot.com/o/Music%2FHoa%20N%E1%BB%9F%20Kh%C3%B4ng%20M%C3%A0u%2Fhoanokhongmau.txt?alt=media&token=290611d3-9fe7-4da8-a8a1-1979bb80fcd9";
-  const lines = getLRC() ?? [];
   const currentSong = useActiveTrack() ?? {
     title: "No song",
     artist: "No artist",
     artwork: "https://via.placeholder.com/300",
   };
 
+  useEffect(() =>  {
+    async function fetchLyric() {
+      const id = currentSong.id;
+    const musicDoc = doc(FIREBASE_DB, "Music", id);
+    const musicRef = await getDoc(musicDoc);
+    const lyricLink = musicRef.data().lyric;
+
+    // "https://firebasestorage.googleapis.com/v0/b/music-app-2c0fc.appspot.com/o/Music%2FHoa%20N%E1%BB%9F%20Kh%C3%B4ng%20M%C3%A0u%2Ftest.txt?alt=media&token=680dad3d-2616-41b8-8de1-b8ec587851b0";
+    fetch(lyricLink)
+    .then((response) => response.text())
+    .then((data) => {
+      const lines = data.split("\n");
+      const lrc = [];
+
+      lines.forEach((line, index) => {
+        const trimmed = line.trim();
+        const lrcLine = parse(trimmed);
+        lrcLine[0].lineNumber = index;
+        lrc.push(lrcLine[0]);
+      });
+      console.log(lrc);
+      setLyricLines(lrc);  
+    });
+    }
+    fetchLyric();
+  }, []);
+
+  
+  //   const lines = getLRC(lyricLink) ?? [];
+    // console.log("lines parsed: ", lr);
+
+  
+
   const playBackState = usePlaybackState();
   const progress = useProgress();
-  console.log(progress);
-  console.log(activeTrack);
+  // console.log(progress);
+  // console.log(activeTrack);
 
   const [favorite, SetFavorite] = useState(false);
   const SongRef = collection(FIREBASE_DB, "User");
@@ -104,7 +145,7 @@ function MusicPlayer() {
             </View>
           </View>
           <LyricScreen
-            lines={parse(lrc)}
+            lines={lyricLines}
             currentTime={progress.position * 1000}
           />
         </ScrollView>
@@ -175,7 +216,7 @@ export const LyricsContainer = ({ lrc, currentTime }) => {
   );
   const onCurrentLineChange = useCallback(
     ({ lrcLine: { millisecond, content }, index }) =>
-      console.log(index, millisecond, content),
+      // console.log(index, millisecond, content),
     []
   );
 
