@@ -34,7 +34,7 @@ import {
 } from "./PlayerControl";
 import LyricScreen from "./LyricScreen.jsx";
 import { FIREBASE_DB } from "../config/firebase";
-import { addDoc, collection, doc, getDocs } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs } from "firebase/firestore";
 
 export const getLRC = async (lrcFile) => {
   
@@ -65,9 +65,20 @@ function MusicPlayer() {
   // console.log(activeTrack);
   const [lyricLines, setLyricLines] = useState([]);
 
-  useEffect(() => {
-    const lyricLink =
-    "https://firebasestorage.googleapis.com/v0/b/music-app-2c0fc.appspot.com/o/Music%2FHoa%20N%E1%BB%9F%20Kh%C3%B4ng%20M%C3%A0u%2Ftest.txt?alt=media&token=680dad3d-2616-41b8-8de1-b8ec587851b0";
+  const currentSong = useActiveTrack() ?? {
+    title: "No song",
+    artist: "No artist",
+    artwork: "https://via.placeholder.com/300",
+  };
+
+  useEffect(() =>  {
+    async function fetchLyric() {
+      const id = currentSong.id;
+    const musicDoc = doc(FIREBASE_DB, "Music", id);
+    const musicRef = await getDoc(musicDoc);
+    const lyricLink = musicRef.data().lyric;
+
+    // "https://firebasestorage.googleapis.com/v0/b/music-app-2c0fc.appspot.com/o/Music%2FHoa%20N%E1%BB%9F%20Kh%C3%B4ng%20M%C3%A0u%2Ftest.txt?alt=media&token=680dad3d-2616-41b8-8de1-b8ec587851b0";
     fetch(lyricLink)
     .then((response) => response.text())
     .then((data) => {
@@ -80,20 +91,18 @@ function MusicPlayer() {
         lrcLine[0].lineNumber = index;
         lrc.push(lrcLine[0]);
       });
-      // console.log(lrc);
+      console.log(lrc);
       setLyricLines(lrc);  
-    })
+    });
+    }
+    fetchLyric();
   }, []);
 
   
   //   const lines = getLRC(lyricLink) ?? [];
     // console.log("lines parsed: ", lr);
 
-  const currentSong = useActiveTrack() ?? {
-    title: "No song",
-    artist: "No artist",
-    artwork: "https://via.placeholder.com/300",
-  };
+  
 
   const playBackState = usePlaybackState();
   const progress = useProgress();
