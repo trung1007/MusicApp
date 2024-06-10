@@ -21,21 +21,18 @@ import TrackPlayer from "react-native-track-player";
 import { SongProvider } from "../../../../context/SongContext";
 import { useQueue } from "../../../../store/queue";
 
-
 const Album = () => {
-  
   const route = useRoute();
   const albumObj = route.params[0];
   const albumID = albumObj.id;
   const navigation = useNavigation();
-  const theme = useContext(themeContext)
+  const theme = useContext(themeContext);
 
-
-  const {activeQueueId, setActiveQueueId} = useQueue();
+  const { activeQueueId, setActiveQueueId } = useQueue();
 
   const [tracks, setTracks] = useState([]);
   const [selectedSong, setSelectedSong] = useState(null);
-  const [select, setSelect] = useState(false)
+  const [select, setSelect] = useState(false);
 
   const fetchMusic = async () => {
     const musicIdList = albumObj.musicList;
@@ -50,7 +47,7 @@ const Album = () => {
           artwork: doc.data().artwork,
           id: musicID,
           url: doc.data().url,
-        })
+        });
       }
     });
     setTracks(tracks);
@@ -58,12 +55,13 @@ const Album = () => {
 
   useEffect(() => {
     fetchMusic();
-    setSelect(false)
+    setSelect(false);
   }, []);
-  const [currentSong, setCurrentSong] = useState({})
+  const [currentSong, setCurrentSong] = useState({});
   const handleSelectSong = async (selectedTrack) => {
     const trackIndex = tracks.findIndex((item) => item.id === selectedTrack.id);
-    const isChangingAlbum = activeQueueId === null || (selectedTrack.id !== activeQueueId);
+    const isChangingAlbum =
+      activeQueueId === null || selectedTrack.id !== activeQueueId;
 
     if (isChangingAlbum) {
       const beforeTracks = tracks.slice(0, trackIndex);
@@ -75,21 +73,17 @@ const Album = () => {
       await TrackPlayer.play();
     } else {
       const nextTrackIndex =
-				trackIndex - queueOffset.current < 0
-					? tracks.length + trackIndex - queueOffset.current
-					: trackIndex - queueOffset.current
+        trackIndex - queueOffset.current < 0
+          ? tracks.length + trackIndex - queueOffset.current
+          : trackIndex - queueOffset.current;
 
-			await TrackPlayer.skip(nextTrackIndex)
-			TrackPlayer.play()
+      await TrackPlayer.skip(nextTrackIndex);
+      TrackPlayer.play();
     }
-
   };
 
-
   return (
-    <SafeAreaView
-      style={[styles.wrapper, { backgroundColor: theme.backgroundColor }]}
-    >
+    <View style={[styles.wrapper, { backgroundColor: theme.backgroundColor }]}>
       <View style={[{ paddingLeft: 10 }]}>
         <TouchableOpacity
           onPress={() => {
@@ -104,50 +98,55 @@ const Album = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
-        <Text style={[styles.albumName, {color:theme.color}]}>
+        <Text style={[styles.albumName, { color: theme.color }]}>
           {route.params[0].name}
         </Text>
-
-        <ScrollView 
-          showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.content}>
-          <Image source={{
-            uri:route.params[0].image
-          }} style={styles.albumImg} />
-
-          {tracks.map((item) => (
-            <AlbumSong 
-            key={item.id}
-            item={item} 
-            onSelectSong={handleSelectSong}
-            />
-          ))}
-        </ScrollView>
+        <Image
+          source={{
+            uri: route.params[0].image,
+          }}
+          style={styles.albumImg}
+        />
       </View>
-    </SafeAreaView>
+      <ScrollView showsHorizontalScrollIndicator={true} style={styles.albumList}>
+        {tracks.map((item) => (
+          <AlbumSong
+            key={item.id}
+            item={item}
+            onSelectSong={handleSelectSong}
+          />
+        ))}
+      </ScrollView>
+    </View>
   );
 };
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
+    display:'flex'
   },
   content: {
     display: "flex",
     alignItems: "center",
-    marginBottom:100
+    // flex: 1,
+    // marginBottom:100
   },
   albumImg: {
     width: 200,
     height: 200,
     borderRadius: 20,
     marginTop: 10,
-    marginBottom:10
+    marginBottom: 10,
   },
   albumName: {
     fontSize: 20,
     fontWeight: "600",
     letterSpacing: 1,
-    marginTop: 10,
+    // marginTop: 10,
   },
+  albumList:{
+    flex:1,
+    // marginBottom:10
+  }
 });
 export default Album;

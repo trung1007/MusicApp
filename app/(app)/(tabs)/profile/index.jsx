@@ -25,7 +25,6 @@ const Profile = () => {
 
   const handleSignOut = async () => {
     try {
-      
       await signOut(FIREBASE_AUTH), console.log("SignOut Successfully");
       await TrackPlayer.reset();
       navigation.navigate("Login");
@@ -54,19 +53,19 @@ const Profile = () => {
           </View>
         </View>
       </View>
-      <View style={styles.personal}>
+      <View style={[styles.personal,{borderBottomColor: theme.color}]}>
         <TouchableOpacity>
-          <Text>Account</Text>
+          <Text style={{ color: theme.color }}>Account</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
             navigation.navigate("settings");
           }}
         >
-          <Text>Setting</Text>
+          <Text style={{ color: theme.color }}>Setting</Text>
         </TouchableOpacity>
         <TouchableOpacity>
-          <Text>About</Text>
+          <Text style={{ color: theme.color }}>About</Text>
         </TouchableOpacity>
       </View>
       <TouchableOpacity
@@ -125,7 +124,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     paddingBottom: 15,
     gap: 10,
-    
   },
   logOutBtn: {
     width: 200,

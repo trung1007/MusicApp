@@ -176,9 +176,9 @@ function MusicPlayer() {
         </View>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <View style={styles.trackControlContatiner}>
-            <SkipToPreviousButton iconSize={38} />
-            <PlayPauseButton iconSize={50} />
-            <SkipToNextButton iconSize={38} />
+            <SkipToPreviousButton iconSize={38} color="white" />
+            <PlayPauseButton iconSize={50}  color="white"/>
+            <SkipToNextButton iconSize={38} color="white"/>
           </View>
           <TouchableOpacity
             style={{ position: "absolute", right: -100 }}
@@ -242,7 +242,7 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#222831",
+    backgroundColor: "#120D15",
   },
   mainContainer: {
     flex: 1,

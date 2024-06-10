@@ -57,14 +57,15 @@ const ModalAddPlaylist = ({ toggleModal }) => {
       animationType="slide"
       style={[styles.modal_wrapper, { backgroundColor: theme.backgroundColor }]}
     >
-      <View style={styles.modal_container}>
+      <View style={[styles.modal_container, {backgroundColor:theme.backgroundColor}]}>
         <View>
           <Pressable onPress={closeModal}>
             <Feather name="x" size={24} color="gray" />
           </Pressable>
           <Text style={{ fontSize: 16, color: "gray" }}>Tên Playlist</Text>
           <TextInput
-            style={styles.modal_textInput}
+            style={[styles.modal_textInput,{borderBottomColor:theme.color}]}
+            color={theme.color}
             onChangeText={(value) => {
               setNewPlaylist(value);
             }}
@@ -80,7 +81,7 @@ const ModalAddPlaylist = ({ toggleModal }) => {
             style={{
               height: 40,
               width: 200,
-              backgroundColor: "red",
+              backgroundColor: theme.iconActiveColor,
               alignItems: "center",
               justifyContent: "center",
               borderRadius: 40,
@@ -93,6 +94,7 @@ const ModalAddPlaylist = ({ toggleModal }) => {
                 color: "white",
                 fontWeight: "600",
               }}
+              
             >
               tạo playlist
             </Text>
@@ -149,7 +151,7 @@ const Playlist = () => {
   }, [allPlaylist]);
 
   return (
-    <SafeAreaView style={styles.wrapper}>
+    <SafeAreaView style={[styles.wrapper, {backgroundColor:theme.backgroundColor}]}>
       <View style={styles.title}>
         <Text style={[{ color: theme.color }, styles.titleText]}>
           Playlist Cá Nhân
@@ -179,7 +181,7 @@ const Playlist = () => {
               <Text style={{ fontSize: 40 }}>+</Text>
             </View>
           </TouchableOpacity>
-          <Text style={{ fontSize: 20 }}>Tạo playlist</Text>
+          <Text style={{ fontSize: 20, color:theme.color }}>Tạo playlist</Text>
         </Pressable>
         {modalPlaylist && <ModalAddPlaylist toggleModal={addPlaylist} />}
         <View>
@@ -204,7 +206,6 @@ const styles = StyleSheet.create({
   wrapper: {
     display: "flex",
     flex: 1,
-    backgroundColor: "white",
   },
   title: {
     paddingLeft: 10,

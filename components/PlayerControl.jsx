@@ -2,9 +2,13 @@
 import { FontAwesome6 } from '@expo/vector-icons'
 import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native'
 import TrackPlayer, { useIsPlaying } from 'react-native-track-player'
+import themeContext from '../theme/themeContext'
+import { useContext } from 'react'
+import theme from '../theme/theme'
 
 
 export const PlayerControls = ({ style }) => {
+	const theme = useContext(themeContext)
 	return (
 		<View style={[styles.container, style]}>
 			<View style={styles.row}>
@@ -18,7 +22,7 @@ export const PlayerControls = ({ style }) => {
 	)
 }
 
-export const PlayPauseButton = ({ style, iconSize = 48 }) => {
+export const PlayPauseButton = ({ style, iconSize, color }) => {
 	const { playing } = useIsPlaying()
 
 	return (
@@ -27,21 +31,21 @@ export const PlayPauseButton = ({ style, iconSize = 48 }) => {
 				activeOpacity={0.85}
 				onPress={playing ? TrackPlayer.pause : TrackPlayer.play}
 			>
-				<FontAwesome6 name={playing ? 'pause' : 'play'} size={iconSize} color="#000" />
+				<FontAwesome6 name={playing ? 'pause' : 'play'} size={iconSize} color={color} />
 			</TouchableOpacity>
 		</View>
 	)
 }
 
-export const SkipToNextButton = ({ iconSize = 30 }) => {
+export const SkipToNextButton = ({ iconSize, color }) => {
 	return (
 		<TouchableOpacity activeOpacity={0.7} onPress={() => TrackPlayer.skipToNext()}>
-			<FontAwesome6 name="forward" size={iconSize} color="#000" />
+			<FontAwesome6 name="forward" size={iconSize} color={color} />
 		</TouchableOpacity>
 	)
 }
 
-export const SkipToPreviousButton = ({ iconSize = 30, color }) => {
+export const SkipToPreviousButton = ({ iconSize , color }) => {
 	return (
 		<TouchableOpacity activeOpacity={0.7} onPress={() => TrackPlayer.skipToPrevious()}>
 			<FontAwesome6 name={'backward'} size={iconSize} color={color} />

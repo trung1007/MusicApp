@@ -50,7 +50,7 @@ const SongModal = ({ item, toggleModal }) => {
       <SafeAreaView
         style={[styles.wrapper, { backgroundColor: theme.backgroundColor }]}
       >
-        <TouchableOpacity onPress={closeModal} style={{ backgroundColor:'#222831' ,paddingLeft: 10 }}>
+        <TouchableOpacity onPress={closeModal} style={{ backgroundColor:'#120D15' ,paddingLeft: 10 }}>
           <AntDesign name="down" size={24} style={{ color: 'white' }} />
         </TouchableOpacity>
         {/* <View style={styles.content}>

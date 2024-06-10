@@ -72,8 +72,8 @@ const SongPlayer = () => {
 
       <View style={styles.trackControlContatiner}>
         <SkipToPreviousButton iconSize={22} color={theme.color} />
-        <PlayPauseButton iconSize={24} />
-        <SkipToNextButton iconSize={22} />
+        <PlayPauseButton iconSize={24} color={theme.color}/>
+        <SkipToNextButton iconSize={22}  color={theme.color}/>
       </View>
       {modalVisible && (
         <SongModal item={displayedTrack} toggleModal={toggleModal} />
