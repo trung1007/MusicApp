@@ -51,7 +51,7 @@ const Register = () => {
 
   useEffect(() => {
     if (showSuccess == 1) {
-      Alert.alert("Đăng nhập kí thành công");
+      Alert.alert("Đăng kí thành công");
       setTimeout(() => {
         setShowSuccess(false);
         goLogin()

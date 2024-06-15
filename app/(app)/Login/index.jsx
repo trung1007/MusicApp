@@ -11,6 +11,7 @@ import {
   TextInput,
   Alert,
   Dimensions,
+  Modal,
 } from "react-native";
 
 import { Link } from "expo-router";
@@ -37,6 +38,7 @@ const Login = () => {
   const [email, setEmail] = useState("trungthanhcao.2003@gmail.com");
   const [password, setPassword] = useState("12323123");
   const [showSuccess, setShowSuccess] = useState(0);
+  const [user, setUser] = useState([]);
 
   const goTabLayOut = () => {
     navigation.navigate("(tabs)");
@@ -55,19 +57,53 @@ const Login = () => {
         }
       });
       AuthProvider.user = user;
+      console.log(user);
+      setUser(user);
     } catch (error) {
       console.log(error);
       setShowSuccess(2);
     }
   };
 
+  const showUserName = ({ userName }) => {
+    return (
+      <Modal>
+        <Text>{userName}</Text>
+      </Modal>
+    );
+  };
 
   useEffect(() => {
-    
+    const userName = user.name || "";
 
-    if (showSuccess == 1) {
-      Alert.alert("Đăng nhập thành công");
+    if (showSuccess == 1 ) {
       setTimeout(() => {
+        Alert.alert(
+          "Đăng nhập thành công",
+          `Đăng nhập thành công`,
+          [
+            {
+              text: "OK",
+              onPress: () => console.log("OK Pressed"),
+              style: {
+                buttonStyle: {
+                  backgroundColor: "green",
+                  color: "white",
+                  fontSize: 16,
+                },
+              },
+            },
+          ],
+          {
+            titleStyle: { fontSize: 18, fontWeight: "bold", color: "black" },
+            messageStyle: { fontSize: 16, color: "black" },
+            containerStyle: {
+              backgroundColor: "lightgray",
+              padding: 20,
+              borderRadius: 10,
+            },
+          }
+        );
         setShowSuccess(false);
         goTabLayOut();
       }, 1500);
